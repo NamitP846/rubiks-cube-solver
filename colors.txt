@@ -1,0 +1,4 @@
+orange
+avg hue = [8, 14]
+avg sat = [160, 210]
+avg val = [200, 255]

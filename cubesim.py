@@ -8,107 +8,132 @@ bg.fill('black')
 
 faces = np.array([
     green:=[
-    ['g', 'g', 'g'],
-    ['g', 'g', 'g'],
-    ['g', 'g', 'g']
+    ['F', 'F', 'F'],
+    ['F', 'F', 'F'],
+    ['F', 'F', 'F']
 ],blue:=[
-    ['b', 'b', 'b'],
-    ['b', 'b', 'b'],
-    ['b', 'b', 'b']
-],white:=[
-    ['w', 'w', 'w'],
-    ['w', 'w', 'w'],
-    ['w', 'w', 'w']
-],yellow:=[
-    ['y', 'y', 'y'],
-    ['y', 'y', 'y'],
-    ['y', 'y', 'y']
-],orange:=[
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o'],
-    ['o', 'o', 'o']
+    ['B', 'B', 'B'],
+    ['B', 'B', 'B'],
+    ['B', 'B', 'B']
 ],red:=[
-    ['r', 'r', 'r'],
-    ['r', 'r', 'r'],
-    ['r', 'r', 'r']
+    ['R', 'R', 'R'],
+    ['R', 'R', 'R'],
+    ['R', 'R', 'R']
+],orange:=[
+    ['L', 'L', 'L'],
+    ['L', 'L', 'L'],
+    ['L', 'L', 'L']
+],white:=[
+    ['U', 'U', 'U'],
+    ['U', 'U', 'U'],
+    ['U', 'U', 'U']
+],yellow:=[
+    ['D', 'D', 'D'],
+    ['D', 'D', 'D'],
+    ['D', 'D', 'D']
 ]
 ])
 
-def forward(x):
-    x.insert(0, x[len(x)-1])
-    x.__delitem__(len(x)-1)
+pieces = np.array([
+    front:=[
+    [5, 1, 7],
+    [6, 21, 8],
+    [13, 14, 15]
+],back:=[
+    [9, 3, 11],
+    [10, 22, 12],
+    [20, 19, 18]
+],right:=[
+    [7, 2, 9],
+    [8, 23, 10],
+    [15, 17, 20]
+],left:=[
+    [11, 4, 5],
+    [12, 24, 6],
+    [18, 16, 13]
+],up:=[
+    [11, 3, 9],
+    [4, 25, 2],
+    [5, 1, 7]
+],down:=[
+    [13, 14, 15],
+    [16, 26, 17],
+    [18, 19, 20]
+]
+])
+
+
 
 def u():
     global faces
-    global yellow
-    yellow = np.rot90(yellow)
-    layer = []
-    affected = [green, red, blue, orange]
-    for face in affected:
-        z = []
-        z.extend(face[0])
-        if face[1][1] == 'g' or face[1][1] == 'b':
-            z.reverse()
-        layer.extend(z)
-    for x in range(3):
-        forward(layer)
-    for face in affected:
-        face[0] = layer[0:3]
-        for x in range(3):
-            layer.__delitem__(0)
-    faces = np.array([green, blue, white, yellow, orange, red])
+    global pieces
+    global white
+    global up
+
+    white = np.rot90(white, -1)
+    temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
+    green[0][0], green[0][1], green[0][2] = red[0][0], red[0][1], red[0][2]
+    red[0][0], red[0][1], red[0][2] = blue[0][0], blue[0][1], blue[0][2]
+    blue[0][0], blue[0][1], blue[0][2] = orange[0][0], orange[0][1], orange[0][2]
+    orange[0][0], orange[0][1], orange[0][2] = temp1, temp2, temp3
+
+    up = np.rot90(up, -1)
+    temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
+    front[0][0], front[0][1], front[0][2] = right[0][0], right[0][1], right[0][2]
+    right[0][0], right[0][1], right[0][2] = back[0][0], back[0][1], back[0][2]
+    back[0][0], back[0][1], back[0][2] = left[0][0], left[0][1], left[0][2]
+    left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    faces = np.array([green, blue, red, orange, white, yellow])
 
 def r():
     global faces
-    global orange
-    orange = np.rot90(orange, -1)
-    layer = []
-    affected = [green, yellow, blue, white]
-    for face in affected:
-        z = []
-        for x in range(len(face)):
-            z.extend(face[x][2])
-        if face[1][1] == 'g' or face[1][1] == 'b':
-            z.reverse()
-        layer.extend(z)
-    for x in range(3):
-        forward(layer)
-    for face in affected:
-        for x in range(3):
-            face[x][2] = layer[0]
-            layer.__delitem__(0)
-    faces = np.array([green, blue, white, yellow, orange, red])
+    global pieces
+    global red
+    global right
+
+    red = np.rot90(red, -1)
+    temp1, temp2, temp3 = green[0][2], green[1][2], green[2][2]
+    green[0][2], green[1][2], green[2][2] = yellow[0][2], yellow[1][2], yellow[2][2]
+    yellow[0][2], yellow[1][2], yellow[2][2] = blue[2][0], blue[1][0], blue[0][0]
+    blue[2][0], blue[1][0], blue[0][0] = white[0][2], white[1][2], white[2][2]
+    white[0][2], white[1][2], white[2][2] = temp1, temp2, temp3
+
+    right = np.rot90(right, -1)
+    temp1, temp2, temp3 = front[0][2], front[1][2], front[2][2]
+    front[0][2], front[1][2], front[2][2] = down[0][2], down[1][2], down[2][2]
+    down[0][2], down[1][2], down[2][2] = back[2][0], back[1][0], back[0][0]
+    back[2][0], back[1][0], back[0][0] = up[0][2], up[1][2], up[2][2]
+    up[0][2], up[1][2], up[2][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    faces = np.array([green, blue, red, orange, white, yellow])
 
 def f():
     global faces
+    global pieces
     global green
+    global front
+
     green = np.rot90(green, -1)
-    layer = []
-    affected = [white, red, yellow, orange]
-    for face in affected:
-        z = []
-        if face[1][1] == 'w' or face[1][1] == 'y':
-                z.extend(face[0])
-                rev = False
-        else:
-            for x in range(3):
-                z.extend(face[x][0])
-                rev = True
-        if rev:
-            z.reverse()
-        layer.extend(z)
-    for x in range(3):
-        forward(layer)
-    for face in affected:
-        if face[1][1] == 'w' or face[1][1] == 'y':
-            face[0] = layer[0:3]
-            for x in range(3):
-                layer.__delitem__(0)
-        else:
-            for x in range(3):
-                face[x][0] = layer[0]
-                layer.__delitem__(0)
-    faces = np.array([green, blue, white, yellow, orange, red])
+    temp1, temp2, temp3 = yellow[0][0], yellow[0][1], yellow[0][2]
+    yellow[0][0], yellow[0][1], yellow[0][2] = red[2][0], red[1][0], red[0][0]
+    red[2][0], red[1][0], red[0][0] = white[2][2], white[2][1], white[2][0]
+    white[2][2], white[2][1], white[2][0] = orange[0][2], orange[1][2], orange[2][2]
+    orange[0][2], orange[1][2], orange[2][2] = temp1, temp2, temp3
+
+    front = np.rot90(front, -1)
+    temp1, temp2, temp3 = down[0][0], down[0][1], down[0][2]
+    down[0][0], down[0][1], down[0][2] = right[2][0], right[1][0], right[0][0]
+    right[2][0], right[1][0], right[0][0] = up[2][2], up[2][1], up[2][0]
+    up[2][2], up[2][1], up[2][0] = left[0][2], left[1][2], left[2][2]
+    left[0][2], left[1][2], left[2][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    faces = np.array([green, blue, red, orange, white, yellow])
+
+
 
 while True:
     for event in pygame.event.get():
@@ -124,24 +149,20 @@ while True:
             quit()
 
     disp = np.ndarray.tolist(faces)
-    for x in range(3):
-        disp[1][x].reverse()
-        disp[3][x].reverse()
-        disp[5][x].reverse()
     for x,face in enumerate(disp):
         for y,row in enumerate(face):
             for z,piece in enumerate(row):
-                if disp[x][y][z] == 'r':
+                if disp[x][y][z] == 'R':
                     disp[x][y][z] = 'red'
-                if disp[x][y][z] == 'o':
+                if disp[x][y][z] == 'L':
                     disp[x][y][z] = 'orange'
-                if disp[x][y][z] == 'b':
+                if disp[x][y][z] == 'B':
                     disp[x][y][z] = 'blue'
-                if disp[x][y][z] == 'g':
+                if disp[x][y][z] == 'F':
                     disp[x][y][z] = 'green'
-                if disp[x][y][z] == 'y':
+                if disp[x][y][z] == 'D':
                     disp[x][y][z] = 'yellow'
-                if disp[x][y][z] == 'w':
+                if disp[x][y][z] == 'U':
                     disp[x][y][z] = 'white'
 
     for x in range(6):
