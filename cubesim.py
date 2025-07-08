@@ -6,7 +6,7 @@ bgsize = (1000, 250)
 bg = pygame.display.set_mode(bgsize, 0)
 bg.fill('black')
 
-faces = np.array([
+facelets = np.array([
     green:=[
     ['F', 'F', 'F'],
     ['F', 'F', 'F'],
@@ -65,7 +65,7 @@ pieces = np.array([
 
 
 def u():
-    global faces
+    global facelets
     global pieces
     global white
     global up
@@ -85,10 +85,10 @@ def u():
     left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
 
     pieces = np.array([front, back, right, left, up, down])
-    faces = np.array([green, blue, red, orange, white, yellow])
+    facelets = np.array([green, blue, red, orange, white, yellow])
 
 def r():
-    global faces
+    global facelets
     global pieces
     global red
     global right
@@ -108,10 +108,10 @@ def r():
     up[0][2], up[1][2], up[2][2] = temp1, temp2, temp3
 
     pieces = np.array([front, back, right, left, up, down])
-    faces = np.array([green, blue, red, orange, white, yellow])
+    facelets = np.array([green, blue, red, orange, white, yellow])
 
 def f():
-    global faces
+    global facelets
     global pieces
     global green
     global front
@@ -131,7 +131,76 @@ def f():
     left[0][2], left[1][2], left[2][2] = temp1, temp2, temp3
 
     pieces = np.array([front, back, right, left, up, down])
-    faces = np.array([green, blue, red, orange, white, yellow])
+    facelets = np.array([green, blue, red, orange, white, yellow])
+
+def l():
+    global facelets
+    global pieces
+    global orange
+    global left
+
+    orange = np.rot90(orange, -1)
+    temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
+    green[0][0], green[0][1], green[0][2] = white[0][0], white[0][1], white[0][2]
+    white[0][0], white[0][1], white[0][2] = blue[0][0], blue[0][1], blue[0][2]
+    blue[0][0], blue[0][1], blue[0][2] = yellow[0][0], yellow[0][1], yellow[0][2]
+    yellow[0][0], yellow[0][1], yellow[0][2] = temp1, temp2, temp3
+
+    up = np.rot90(up, -1)
+    temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
+    front[0][0], front[0][1], front[0][2] = right[0][0], right[0][1], right[0][2]
+    right[0][0], right[0][1], right[0][2] = back[0][0], back[0][1], back[0][2]
+    back[0][0], back[0][1], back[0][2] = left[0][0], left[0][1], left[0][2]
+    left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    facelets = np.array([green, blue, red, orange, white, yellow])
+
+def d():
+    global facelets
+    global pieces
+    global yellow
+    global down
+
+    white = np.rot90(white, -1)
+    temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
+    green[0][0], green[0][1], green[0][2] = red[0][0], red[0][1], red[0][2]
+    red[0][0], red[0][1], red[0][2] = blue[0][0], blue[0][1], blue[0][2]
+    blue[0][0], blue[0][1], blue[0][2] = orange[0][0], orange[0][1], orange[0][2]
+    orange[0][0], orange[0][1], orange[0][2] = temp1, temp2, temp3
+
+    up = np.rot90(up, -1)
+    temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
+    front[0][0], front[0][1], front[0][2] = right[0][0], right[0][1], right[0][2]
+    right[0][0], right[0][1], right[0][2] = back[0][0], back[0][1], back[0][2]
+    back[0][0], back[0][1], back[0][2] = left[0][0], left[0][1], left[0][2]
+    left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    facelets = np.array([green, blue, red, orange, white, yellow])
+
+def b():
+    global facelets
+    global pieces
+    global blue
+    global back
+
+    white = np.rot90(white, -1)
+    temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
+    green[0][0], green[0][1], green[0][2] = red[0][0], red[0][1], red[0][2]
+    red[0][0], red[0][1], red[0][2] = blue[0][0], blue[0][1], blue[0][2]
+    blue[0][0], blue[0][1], blue[0][2] = orange[0][0], orange[0][1], orange[0][2]
+    orange[0][0], orange[0][1], orange[0][2] = temp1, temp2, temp3
+
+    up = np.rot90(up, -1)
+    temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
+    front[0][0], front[0][1], front[0][2] = right[0][0], right[0][1], right[0][2]
+    right[0][0], right[0][1], right[0][2] = back[0][0], back[0][1], back[0][2]
+    back[0][0], back[0][1], back[0][2] = left[0][0], left[0][1], left[0][2]
+    left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
+
+    pieces = np.array([front, back, right, left, up, down])
+    facelets = np.array([green, blue, red, orange, white, yellow])
 
 
 
@@ -144,11 +213,17 @@ while True:
                 f()
             elif event.unicode == 'u':
                 u()
+            elif event.unicode == 'l':
+                l()
+            elif event.unicode == 'd':
+                d()
+            elif event.unicode == 'b':
+                b()
             
         if event.type == pygame.QUIT:
             quit()
 
-    disp = np.ndarray.tolist(faces)
+    disp = np.ndarray.tolist(facelets)
     for x,face in enumerate(disp):
         for y,row in enumerate(face):
             for z,piece in enumerate(row):
