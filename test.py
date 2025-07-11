@@ -10,5 +10,8 @@ a = np.array([
     ]
 ])
 
-a = np.rot90(a, k=1, axes=(0, 1))
-print(a)
+lista = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+
+x = np.where(a == 4)
+i, j, k = int(x[0].item()), int(x[1].item()), int(x[2].item())
+print(lista[i][j][k])
