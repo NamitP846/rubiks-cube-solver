@@ -1,5 +1,6 @@
 import pygame
 import twophase.solver as sv
+import copy
 
 pygame.display.init()
 bgsize = (830, 630)
@@ -214,6 +215,36 @@ def b():
     facelets = [white, red, green, yellow, orange, blue]
     sol += 'B'
 
+def move(str, rot = 0):
+    str = list(str)
+    movelist = [f(), r(), b(), l()]
+    for i, let in enumerate(str):
+        if let.isalpha() and i != len(str):
+            if str[i+1] == ' ':
+                rep = 1
+            elif str[i+1] == '2':
+                rep = 2
+            elif str[i+1] == "'":
+                rep = 3
+            if let == 'U':
+                for x in range(rep):
+                    u()
+            elif let == 'R':
+                for x in range(rep):
+                    movelist[(rot+1)%4]
+            elif let == 'F':
+                for x in range(rep):
+                    movelist[rot]
+            elif let == 'D':
+                for x in range(rep):
+                    d()
+            elif let == 'L':
+                for x in range(rep):
+                    movelist[(rot+3)%4]
+            elif let == 'B':
+                for x in range(rep):
+                    movelist[(rot+2)%4]
+
 def rotate(face):
     rotatedface = [[face[2][0], face[1][0], face[0][0]],
                    [face[2][1], face[1][1], face[0][1]],
@@ -235,37 +266,35 @@ def inface(face, piecenum):
     return(False)
 
 def solvecross():
+    global sol
     sol = ''
     # move cross pieces to bottom layer
-    if inface(front[0:2], 1) or inface(front[0:2], 2) or inface(front[0:2], 3) or inface(front[0:2], 4):
+    while inface(front[0:2], 1) or inface(front[0:2], 2) or inface(front[0:2], 3) or inface(front[0:2], 4):
         while 1 == front[2][1] or 2 == front[2][1] or 3 == front[2][1] or 4 == front[2][1]:
             d()
         while front[2][1] != 1 and not 2 == front[2][1] and not 3 == front[2][1] and not 4 == front[2][1]:
             f()
 
-    if right[0][1] == 1 or right[0][1] == 2 or right[0][1] == 3 or right [0][1] == 4:
+    while right[0][1] == 1 or right[0][1] == 2 or right[0][1] == 3 or right [0][1] == 4:
         while 1 == right[2][1] or 2 == right[2][1] or 3 == right[2][1] or 4 == right[2][1]:
             d()
         r()
         r()
 
-    if inface(back[0:2], 1) or inface(back[0:2], 2) or inface(back[0:2], 3) or inface(back[0:2], 4):
+    while inface(back[0:2], 1) or inface(back[0:2], 2) or inface(back[0:2], 3) or inface(back[0:2], 4):
         while 1 == back[2][1] or 2 == back[2][1] or 3 == back[2][1] or 4 == back[2][1]:
             d()
         while back[2][1] != 1 and back[2][1] != 2 and back[2][1] != 3 and back[2][1] != 4:
             b()
 
-    if left[0][1] == 1 or left[0][1] == 2 or left[0][1] == 3 or left[0][1] == 4:
+    while left[0][1] == 1 or left[0][1] == 2 or left[0][1] == 3 or left[0][1] == 4:
         while 1 == left[2][1] or 2 == left[2][1] or 3 == left[2][1] or 4 == left[2][1]:
             d()
         l()
         l()
-    print('up: ', up)
-    print(down)
 
-def solvecrosspieces():
-# solve cross pieces
     gwi, gwj = find(down, 1)
+    print(yellow)
     if yellow[gwi][gwj] == 'U':
         while front[2][1] != 1:
             d()
@@ -329,13 +358,19 @@ def solvef2l():
     global sol
 
     if white[2][0] != 'U' or up[2][0] != 5:
-        while 5 in front[0:2]:
+        if 5 == front[0][0]:
             f()
         while 5 in back[0:2]:
+            print(2)
             b()
         while front[2][0] != 5:
+            print(3)
             d()
+        savefacelets = facelets.copy()
+        savepieces = pieces.copy()
+        smove = 0
         while white[2][0] != 'U' or up[2][0] != 5:
+            smove += 1
             l()
             d()
             l()
@@ -344,106 +379,76 @@ def solvef2l():
             d()
             d()
             d()
+        if smove >= 3:
+            facelets = savefacelets
+            pieces = savepieces
+            while white[2][0] != 'U' or up[2][0] != 5:
+                f()
+                f()
+                f()
+                d()
+                d()
+                d()
+                f()
+                d()
 
-    if white[2][2] != 'U' and up[2][2] != 7:
-        while 7 in front[0:2]:
-            f()
-        while 7 in back[0:2]:
-            b()
-        while front[2][2] != 7:
-            d()
-        while white[2][2] != 'U' or up[2][2] != 7:
-            f()
-            d()
-            f()
-            f()
-            f()
-            d()
-            d()
-            d()
+#    if white[2][2] != 'U' and up[2][2] != 7:
+#        while 7 in front[0:2]:
+#            f()
+#        while 7 in back[0:2]:
+#            b()
+#        while front[2][2] != 7:
+#            d()
+#        while white[2][2] != 'U' or up[2][2] != 7:
+#            f()
+#            d()
+#            f()
+#            f()
+#            f()
+#            d()
+#            d()
+#            d()
+#
+#    if white[0][2] != 'U' or up[0][2] != 9:
+#        while 9 in front[0:2]:
+#            f()
+#        while 9 in back[0:2]:
+#            b()
+#        while back[2][0] != 9:
+#            d()
+#        while white[0][2] != 'U' or up[0][2] != 9:
+#            r()
+#            d()
+#            r()
+#            r()
+#            r()
+#            d()
+#            d()
+#            d()
+#
+#    if white[0][0] != 'U' or up[0][0] != 11:
+#        while 11 in front[0:2]:
+#            f()
+#        while 11 in back[0:2]:
+#            b()
+#        while back[2][2] != 11:
+#            d()
+#        while white[0][0] != 'U' or up[0][0] != 11:
+#            b()
+#            d()
+#            b()
+#            b()
+#            b()
+#            d()
+#            d()
+#            d()
 
-    if white[0][2] != 'U' or up[0][2] != 9:
-        while 9 in front[0:2]:
-            f()
-        while 9 in back[0:2]:
-            b()
-        while back[2][0] != 9:
-            d()
-        while white[0][2] != 'U' or up[0][2] != 9:
-            r()
-            d()
-            r()
-            r()
-            r()
-            d()
-            d()
-            d()
 
-    if white[0][0] != 'U' or up[0][0] != 11:
-        while 11 in front[0:2]:
-            f()
-        while 11 in back[0:2]:
-            b()
-        while back[2][2] != 11:
-            d()
-        while white[0][0] != 'U' or up[0][0] != 11:
-            b()
-            d()
-            b()
-            b()
-            b()
-            d()
-            d()
-            d()
-
-'''
 # test scramble
-for x in range(1):
-    r()
-    d()
-    d()
-    r()
-    r()
-    b()
-    b()
-    d()
-    d()
-    f()
-    f()
-    d()
-    d()
-    d()
-    b()
-    b()
-    u()
-    b()
-    b()
-    u()
-    u()
-    u()
-    b()
-    b()
-    r()
-    r()
-    r()
-    u()
-    u()
-    u()
-    r()
-    r()
-    f()
-    f()
-    f()
-    l()
-    b()
-    b()
-    b()
-    l()
-    l()
-    u()
-    u()
+scramble = input("Scramble: ")
+scramble = "R D2 R2 B2 D2 F2 D' B2 U B2 U' B2 R' U' R2 F' L B' L2 U2"
+move(scramble)
 
-'''
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -471,7 +476,6 @@ while True:
                 print(sv.solve(cubestring, 19, 3))
             elif event.unicode == 's':
                 solvecross()
-                solvecrosspieces()
 #                solvef2l()
                 print(sol)
                 sol = list(sol)
@@ -493,7 +497,12 @@ while True:
                         solstring.append(' ')
                         movecount += 1
                         j = 1
-                solstring.append(move)
+                solstring.append(sol[-1])
+                j = j % 4
+                if j == 3:
+                    j = "'"
+                elif j == 1:
+                    j = ' '
                 solstring.append(str(j))
                 solstring.append(' ')
                 solstring = ''.join(solstring)
@@ -509,38 +518,8 @@ while True:
     yx, yy = 230, 430
     ox, oy = 30, 230
 
-    disp = [
-        [
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ],[
-            ['','',''],
-            ['','',''],
-            ['','','']
-        ]
-    ]
-    for i, face in enumerate(facelets):
+    disp = copy.deepcopy(facelets)
+    for i, face in enumerate(disp):
         for j, layer in enumerate(face):
             for k, facelet in enumerate(layer):
                 if facelet == 'U':
