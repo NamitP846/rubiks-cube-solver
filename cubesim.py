@@ -215,35 +215,35 @@ def b():
     facelets = [white, red, green, yellow, orange, blue]
     sol += 'B'
 
-def move(str, rot = 0):
+def move(str):
     str = list(str)
-    movelist = [f(), r(), b(), l()]
     for i, let in enumerate(str):
-        if let.isalpha() and i != len(str):
+        rep = 1
+        if let.isalpha() and i != len(str)-1:
             if str[i+1] == ' ':
                 rep = 1
             elif str[i+1] == '2':
                 rep = 2
             elif str[i+1] == "'":
                 rep = 3
-            if let == 'U':
-                for x in range(rep):
-                    u()
-            elif let == 'R':
-                for x in range(rep):
-                    movelist[(rot+1)%4]
-            elif let == 'F':
-                for x in range(rep):
-                    movelist[rot]
-            elif let == 'D':
-                for x in range(rep):
-                    d()
-            elif let == 'L':
-                for x in range(rep):
-                    movelist[(rot+3)%4]
-            elif let == 'B':
-                for x in range(rep):
-                    movelist[(rot+2)%4]
+        if let == 'U':
+            for x in range(rep):
+                u()
+        elif let == 'R':
+            for x in range(rep):
+                r()
+        elif let == 'F':
+            for x in range(rep):
+                f()
+        elif let == 'D':
+            for x in range(rep):
+                d()
+        elif let == 'L':
+            for x in range(rep):
+                l()
+        elif let == 'B':
+            for x in range(rep):
+                b()
 
 def rotate(face):
     rotatedface = [[face[2][0], face[1][0], face[0][0]],
@@ -294,7 +294,6 @@ def solvecross():
         l()
 
     gwi, gwj = find(down, 1)
-    print(yellow)
     if yellow[gwi][gwj] == 'U':
         while front[2][1] != 1:
             d()
@@ -357,96 +356,163 @@ def solvecross():
 def solvef2l():
     global sol
 
-    if white[2][0] != 'U' or up[2][0] != 5:
-        if 5 == front[0][0]:
-            f()
-        while 5 in back[0:2]:
-            print(2)
-            b()
+    if 5 == back[0][0]:
+        move("R D R'")
+    elif 5 == back[0][2]:
+        move("L' D L")
+    elif 5 == front[0][2]:
+        move("R' D R")
+    if inface(down, 5):
         while front[2][0] != 5:
-            print(3)
             d()
-        savefacelets = facelets.copy()
-        savepieces = pieces.copy()
-        smove = 0
-        while white[2][0] != 'U' or up[2][0] != 5:
-            smove += 1
-            l()
-            d()
-            l()
-            l()
-            l()
-            d()
-            d()
-            d()
-        if smove >= 3:
-            facelets = savefacelets
-            pieces = savepieces
-            while white[2][0] != 'U' or up[2][0] != 5:
-                f()
-                f()
-                f()
-                d()
-                d()
-                d()
-                f()
-                d()
+        if green[2][0] == "F":
+            move("L D L'")
+        elif green[2][0] == "L":
+            move("L D2 L' D' L D L'")
+        else:
+            move("F' D' F")
+    else:
+        if green[0][0] == "U":
+            move("F' D' F D F' D' F")
+        elif green[0][0] == "L":
+            move("L D L' D' L D L'")
 
-#    if white[2][2] != 'U' and up[2][2] != 7:
-#        while 7 in front[0:2]:
-#            f()
-#        while 7 in back[0:2]:
-#            b()
-#        while front[2][2] != 7:
-#            d()
-#        while white[2][2] != 'U' or up[2][2] != 7:
-#            f()
-#            d()
-#            f()
-#            f()
-#            f()
-#            d()
-#            d()
-#            d()
-#
-#    if white[0][2] != 'U' or up[0][2] != 9:
-#        while 9 in front[0:2]:
-#            f()
-#        while 9 in back[0:2]:
-#            b()
-#        while back[2][0] != 9:
-#            d()
-#        while white[0][2] != 'U' or up[0][2] != 9:
-#            r()
-#            d()
-#            r()
-#            r()
-#            r()
-#            d()
-#            d()
-#            d()
-#
-#    if white[0][0] != 'U' or up[0][0] != 11:
-#        while 11 in front[0:2]:
-#            f()
-#        while 11 in back[0:2]:
-#            b()
-#        while back[2][2] != 11:
-#            d()
-#        while white[0][0] != 'U' or up[0][0] != 11:
-#            b()
-#            d()
-#            b()
-#            b()
-#            b()
-#            d()
-#            d()
-#            d()
+
+    if 7 == back[0][0]:
+        move("R D R'")
+    elif 7 == back[0][2]:
+        move("L' D L")
+    if inface(down, 7):
+        while front[2][2] != 7:
+            d()
+        if green[2][2] == "F":
+            move("R' D' R")
+        elif green[2][2] == "R":
+            move("R' D2 R D R' D' R")
+        else:
+            move("F D F'")
+    else:
+        if green[0][2] == "U":
+            move("F D F' D' F D F'")
+        elif green[0][2] == "L":
+            move("R' D' R D R' D' R")
+
+
+    if 9 == back[0][2]:
+        move("L' D L")
+    if inface(down, 9):
+        while back[2][0] != 9:
+            d()
+        if blue[2][0] == "B":
+            move("R D R'")
+        elif blue[2][0] == "R":
+            move("R D2 R' D' R D R'")
+        else:
+            move("B' D' B")
+    else:
+        if blue[0][0] == "U":
+            move("B' D' B D B' D' B")
+        elif blue[0][0] == "R":
+            move("R D R' D' R D R'")
+
+
+    if inface(down, 11):
+        while back[2][2] != 11:
+            d()
+        if blue[2][2] == "B":
+            move("L' D' L")
+        elif blue[2][2] == "L":
+            move("L' D2 L D L' D' L")
+        else:
+            move("B D B'")
+    else:
+        if blue[0][0] == "U":
+            move("B D B' D' B D B'")
+        elif blue[0][0] == "L":
+            move("L' D' L D L' D' L")
+
+
+
+    if front[1][0] == 6 and green[1][0] == "G":
+        pass
+    else:
+        if front[1][0] == 6:
+            move("L D L' D' F' D' F")
+        elif front[1][2] == 6:
+            move("R' D' R D F D F'")
+        elif back[1][0] == 6:
+            move("R D R' D' B' D' B")
+        elif back[1][2] == 6:
+            move("L' D' L D B D B'")
+        ogi, ogj = find(down, 6)
+        if yellow[ogi][ogj] == "L":
+            while down[1][2] != 6:
+                d()
+            move("L D' L' F L' F' L")
+        else:
+            while down[2][1] != 6:
+                d()
+            move("F' D F L' F L F'")
+
+
+    if front[1][2] == 8 and green[1][2] == "G":
+        pass
+    else:
+        if front[1][2] == 8:
+            move("R' D' R D F D F'")
+        elif back[1][0] == 8:
+            move("R D R' D' B' D' B")
+        elif back[1][2] == 8:
+            move("L' D' L D B D B'")
+        rgi, rgj = find(down, 8)
+        if yellow[rgi][rgj] == "R":
+            while down[1][0] != 8:
+                d()
+            move("R' D R F' R F R'")
+        else:
+            while down[2][1] != 8:
+                d()
+            move("F D' F' R F' R' F")
+
+
+    if back[1][0] == 10 and blue[1][0] == "B":
+        pass
+    else:
+        if back[1][0] == 10:
+            move("R D R' D' B' D' B")
+        elif back[1][2] == 10:
+            move("L' D' L D B D B'")
+        rbi, rbj = find(down, 10)
+        if yellow[rbi][rbj] == "R":
+            while down[1][0] != 10:
+                d()
+            move("R D' R' B R' B' R")
+        else:
+            while down[0][1] != 10:
+                d()
+            move("B' D B R' B R B'")
+
+
+    if back[1][2] == 12 and blue[1][2] == "B":
+        pass
+    else:
+        if back[1][2] == 12:
+            move("L' D' L D B D B'")
+        obi, obj = find(down, 12)
+        if yellow[obi][obj] == "L":
+            while down[1][2] != 12:
+                d()
+            move("L' D L B' L B L'")
+        else:
+            while down[0][1] != 12:
+                d()
+            move("B D' B' L B' L' B")
+
 
 
 # test scramble
-scramble = input("Scramble: ")
-scramble = "R D2 R2 B2 D2 F2 D' B2 U B2 U' B2 R' U' R2 F' L B' L2 U2"
+#scramble = input("Scramble: ")
+scramble = "F2 D B' R2 D2 F2 D2 B' U2 B' R2 D2 F2 D2 L' U B' D2 B2 R2 D2"
 move(scramble)
 
 while True:
@@ -467,22 +533,21 @@ while True:
             elif event.unicode == 'p':
                 print(pieces)
             elif event.unicode == 't':
-                list = []
+                cibestring = []
                 for i in facelets:
                     for j in i:
                         for k in j:
                             list.append(k)
-                cubestring = ''.join(list)
+                cubestring = ''.join(cubestring)
                 print(sv.solve(cubestring, 19, 3))
             elif event.unicode == 's':
                 solvecross()
-#                solvef2l()
-                print(sol)
+                solvef2l()
                 sol = list(sol)
                 solstring = []
                 j = 1
                 movecount = 1
-                for i, move in enumerate(sol[0:-1]):
+                for i, turn in enumerate(sol[0:-1]):
                     if sol[i] == sol[i+1]:
                         sol[i] = ' '
                         j += 1
@@ -492,7 +557,7 @@ while True:
                             j = "'"
                         elif j == 1:
                             j = ' '
-                        solstring.append(move)
+                        solstring.append(turn)
                         solstring.append(str(j))
                         solstring.append(' ')
                         movecount += 1
