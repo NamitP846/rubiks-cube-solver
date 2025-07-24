@@ -10,11 +10,11 @@ bg.fill('black')
 sol = ''
 
 facelets = [
-    white:=[
+    yellow:=[
     ['U', 'U', 'U'],
     ['U', 'U', 'U'],
     ['U', 'U', 'U']
-],red:=[
+],orange:=[
     ['R', 'R', 'R'],
     ['R', 'R', 'R'],
     ['R', 'R', 'R']
@@ -22,11 +22,11 @@ facelets = [
     ['F', 'F', 'F'],
     ['F', 'F', 'F'],
     ['F', 'F', 'F']
-],yellow:=[
+],white:=[
     ['D', 'D', 'D'],
     ['D', 'D', 'D'],
     ['D', 'D', 'D']
-],orange:=[
+],red:=[
     ['L', 'L', 'L'],
     ['L', 'L', 'L'],
     ['L', 'L', 'L']
@@ -39,45 +39,45 @@ facelets = [
 
 pieces = [
     up:=[
-    [11, 3, 9],
-    [4, 25, 2],
-    [5, 1, 7]
-],right:=[
-    [7, 2, 9],
-    [8, 23, 10],
-    [15, 17, 20]
-],front:=[
-    [5, 1, 7],
-    [6, 21, 8],
-    [13, 14, 15]
-],down:=[
     [13, 14, 15],
     [16, 26, 17],
     [18, 19, 20]
+],right:=[
+    [20, 17, 15],
+    [6, 23, 8],
+    [5, 2, 7]
+],front:=[
+    [18, 19, 20],
+    [12, 21, 6],
+    [11, 1, 5]
+],down:=[
+    [11, 1, 5],
+    [4, 25, 2],
+    [9, 3, 7]
 ],left:=[
-    [11, 4, 5],
-    [12, 24, 6],
-    [18, 16, 13]
+    [13, 16, 18],
+    [10, 24, 12],
+    [9, 4, 11]
 ],back:=[
-    [9, 3, 11],
-    [10, 22, 12],
-    [20, 19, 18]
+    [15, 14, 13],
+    [10, 22, 8],
+    [9, 3, 7]
 ]
 ]
 
 def u():
     global facelets
     global pieces
-    global white
+    global yellow
     global up
     global sol
 
-    white = rotate(white)
+    yellow = rotate(yellow)
     temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
-    green[0][0], green[0][1], green[0][2] = red[0][0], red[0][1], red[0][2]
-    red[0][0], red[0][1], red[0][2] = blue[0][0], blue[0][1], blue[0][2]
-    blue[0][0], blue[0][1], blue[0][2] = orange[0][0], orange[0][1], orange[0][2]
-    orange[0][0], orange[0][1], orange[0][2] = temp1, temp2, temp3
+    green[0][0], green[0][1], green[0][2] = orange[0][0], orange[0][1], orange[0][2]
+    orange[0][0], orange[0][1], orange[0][2] = blue[0][0], blue[0][1], blue[0][2]
+    blue[0][0], blue[0][1], blue[0][2] = red[0][0], red[0][1], red[0][2]
+    red[0][0], red[0][1], red[0][2] = temp1, temp2, temp3
 
     up = rotate(up)
     temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
@@ -87,22 +87,22 @@ def u():
     left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'U'
 
 def r():
     global facelets
     global pieces
-    global red
+    global orange
     global right
     global sol
 
-    red = rotate(red)
+    orange = rotate(orange)
     temp1, temp2, temp3 = green[0][2], green[1][2], green[2][2]
-    green[0][2], green[1][2], green[2][2] = yellow[0][2], yellow[1][2], yellow[2][2]
-    yellow[0][2], yellow[1][2], yellow[2][2] = blue[2][0], blue[1][0], blue[0][0]
-    blue[2][0], blue[1][0], blue[0][0] = white[0][2], white[1][2], white[2][2]
-    white[0][2], white[1][2], white[2][2] = temp1, temp2, temp3
+    green[0][2], green[1][2], green[2][2] = white[0][2], white[1][2], white[2][2]
+    white[0][2], white[1][2], white[2][2] = blue[2][0], blue[1][0], blue[0][0]
+    blue[2][0], blue[1][0], blue[0][0] = yellow[0][2], yellow[1][2], yellow[2][2]
+    yellow[0][2], yellow[1][2], yellow[2][2] = temp1, temp2, temp3
 
     right = rotate(right)
     temp1, temp2, temp3 = front[0][2], front[1][2], front[2][2]
@@ -112,7 +112,7 @@ def r():
     up[0][2], up[1][2], up[2][2] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'R'
 
 def f():
@@ -123,11 +123,11 @@ def f():
     global sol
 
     green = rotate(green)
-    temp1, temp2, temp3 = yellow[0][0], yellow[0][1], yellow[0][2]
-    yellow[0][0], yellow[0][1], yellow[0][2] = red[2][0], red[1][0], red[0][0]
-    red[2][0], red[1][0], red[0][0] = white[2][2], white[2][1], white[2][0]
-    white[2][2], white[2][1], white[2][0] = orange[0][2], orange[1][2], orange[2][2]
-    orange[0][2], orange[1][2], orange[2][2] = temp1, temp2, temp3
+    temp1, temp2, temp3 = white[0][0], white[0][1], white[0][2]
+    white[0][0], white[0][1], white[0][2] = orange[2][0], orange[1][0], orange[0][0]
+    orange[2][0], orange[1][0], orange[0][0] = yellow[2][2], yellow[2][1], yellow[2][0]
+    yellow[2][2], yellow[2][1], yellow[2][0] = red[0][2], red[1][2], red[2][2]
+    red[0][2], red[1][2], red[2][2] = temp1, temp2, temp3
 
     front = rotate(front)
     temp1, temp2, temp3 = down[0][0], down[0][1], down[0][2]
@@ -137,17 +137,17 @@ def f():
     left[0][2], left[1][2], left[2][2] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'F'
 
 def d():
     global facelets
     global pieces
-    global yellow
+    global white
     global down
     global sol
 
-    yellow = rotate(yellow)
+    white = rotate(white)
     temp1, temp2, temp3 = green[2][0], green[2][1], green[2][2]
     green[2][0], green[2][1], green[2][2] = orange[2][0], orange[2][1], orange[2][2]
     orange[2][0], orange[2][1], orange[2][2] = blue[2][0], blue[2][1], blue[2][2]
@@ -162,22 +162,22 @@ def d():
     right[2][0], right[2][1], right[2][2] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'D'
 
 def l():
     global facelets
     global pieces
-    global orange
+    global red
     global left
     global sol
 
-    orange = rotate(orange)
+    red = rotate(red)
     temp1, temp2, temp3 = green[0][0], green[1][0], green[2][0]
-    green[0][0], green[1][0], green[2][0] = white[0][0], white[1][0], white[2][0]
-    white[0][0], white[1][0], white[2][0] = blue[2][2], blue[1][2], blue[0][2]
-    blue[2][2], blue[1][2], blue[0][2] = yellow[0][0], yellow[1][0], yellow[2][0]
-    yellow[0][0], yellow[1][0], yellow[2][0] = temp1, temp2, temp3
+    green[0][0], green[1][0], green[2][0] = yellow[0][0], yellow[1][0], yellow[2][0]
+    yellow[0][0], yellow[1][0], yellow[2][0] = blue[2][2], blue[1][2], blue[0][2]
+    blue[2][2], blue[1][2], blue[0][2] = white[0][0], white[1][0], white[2][0]
+    white[0][0], white[1][0], white[2][0] = temp1, temp2, temp3
 
     left = rotate(left)
     temp1, temp2, temp3 = front[0][0], front[1][0], front[2][0]
@@ -187,7 +187,7 @@ def l():
     down[0][0], down[1][0], down[2][0] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'L'
 
 def b():
@@ -198,11 +198,11 @@ def b():
     global sol
 
     blue = rotate(blue)
-    temp1, temp2, temp3 = orange[0][0], orange[1][0], orange[2][0]
-    orange[0][0], orange[1][0], orange[2][0] = white[0][2], white[0][1], white[0][0]
-    white[0][2], white[0][1], white[0][0] = red[2][2], red[1][2], red[0][2]
-    red[2][2], red[1][2], red[0][2] = yellow[2][0], yellow[2][1], yellow[2][2]
-    yellow[2][0], yellow[2][1], yellow[2][2] = temp1, temp2, temp3
+    temp1, temp2, temp3 = red[0][0], red[1][0], red[2][0]
+    red[0][0], red[1][0], red[2][0] = yellow[0][2], yellow[0][1], yellow[0][0]
+    yellow[0][2], yellow[0][1], yellow[0][0] = orange[2][2], orange[1][2], orange[0][2]
+    orange[2][2], orange[1][2], orange[0][2] = white[2][0], white[2][1], white[2][2]
+    white[2][0], white[2][1], white[2][2] = temp1, temp2, temp3
 
     back = rotate(back)
     temp1, temp2, temp3 = left[0][0], left[1][0], left[2][0]
@@ -212,10 +212,10 @@ def b():
     down[2][0], down[2][1], down[2][2] = temp1, temp2, temp3
 
     pieces = [up, right, front, down, left, back]
-    facelets = [white, red, green, yellow, orange, blue]
+    facelets = [yellow, orange, green, white, red, blue]
     sol += 'B'
 
-def move(str):
+def move(str, rot = 0, scr = False):
     str = list(str)
     for i, let in enumerate(str):
         rep = 1
@@ -227,20 +227,36 @@ def move(str):
             elif str[i+1] == "'":
                 rep = 3
         if let == 'U':
-            for x in range(rep):
-                u()
+            if scr:
+                for x in range(rep):
+                    d()
+            else:
+                for x in range(rep):
+                    u()
         elif let == 'R':
-            for x in range(rep):
-                r()
+            if scr:
+                for x in range(rep):
+                    l()
+            else:
+                for x in range(rep):
+                    r()
         elif let == 'F':
             for x in range(rep):
                 f()
         elif let == 'D':
-            for x in range(rep):
-                d()
+            if scr:
+                for x in range(rep):
+                    u()
+            else:
+                for x in range(rep):
+                    d()
         elif let == 'L':
-            for x in range(rep):
-                l()
+            if scr:
+                for x in range(rep):
+                    r()
+            else:
+                for x in range(rep):
+                    l()
         elif let == 'B':
             for x in range(rep):
                 b()
@@ -268,28 +284,28 @@ def inface(face, piecenum):
 def solvecross():
     global sol
     sol = ''
-    # move cross pieces to bottom layer
-    while inface(front[0:2], 1) or inface(front[0:2], 2) or inface(front[0:2], 3) or inface(front[0:2], 4):
-        while 1 == front[2][1] or 2 == front[2][1] or 3 == front[2][1] or 4 == front[2][1]:
-            d()
-        while front[2][1] != 1 and not 2 == front[2][1] and not 3 == front[2][1] and not 4 == front[2][1]:
+    # move cross pieces to yellow layer
+    while inface(front[1:3], 1) or inface(front[1:3], 2) or inface(front[1:3], 3) or inface(front[1:3], 4):
+        while 1 == front[0][1] or 2 == front[0][1] or 3 == front[0][1] or 4 == front[0][1]:
+            u()
+        while front[0][1] != 1 and not 2 == front[0][1] and not 3 == front[0][1] and not 4 == front[0][1]:
             f()
 
     while right[0][1] == 1 or right[0][1] == 2 or right[0][1] == 3 or right [0][1] == 4:
-        while 1 == right[2][1] or 2 == right[2][1] or 3 == right[2][1] or 4 == right[2][1]:
-            d()
+        while 1 == right[0][1] or 2 == right[0][1] or 3 == right[0][1] or 4 == right[0][1]:
+            u()
         r()
         r()
 
-    while inface(back[0:2], 1) or inface(back[0:2], 2) or inface(back[0:2], 3) or inface(back[0:2], 4):
+    while inface(back[1:3], 1) or inface(back[1:3], 2) or inface(back[1:3], 3) or inface(back[1:3], 4):
         while 1 == back[2][1] or 2 == back[2][1] or 3 == back[2][1] or 4 == back[2][1]:
-            d()
+            u()
         while back[2][1] != 1 and back[2][1] != 2 and back[2][1] != 3 and back[2][1] != 4:
             b()
 
     while left[0][1] == 1 or left[0][1] == 2 or left[0][1] == 3 or left[0][1] == 4:
         while 1 == left[2][1] or 2 == left[2][1] or 3 == left[2][1] or 4 == left[2][1]:
-            d()
+            u()
         l()
         l()
 
@@ -513,7 +529,7 @@ def solvef2l():
 # test scramble
 #scramble = input("Scramble: ")
 scramble = "F2 D B' R2 D2 F2 D2 B' U2 B' R2 D2 F2 D2 L' U B' D2 B2 R2 D2"
-move(scramble)
+move(scramble, scr=True)
 
 while True:
     for event in pygame.event.get():
@@ -532,17 +548,16 @@ while True:
                 b()
             elif event.unicode == 'p':
                 print(pieces)
-            elif event.unicode == 't':
-                cibestring = []
+            elif event.unicode == 's':
+                cubestring = []
                 for i in facelets:
                     for j in i:
                         for k in j:
-                            list.append(k)
+                            cubestring.append(k)
                 cubestring = ''.join(cubestring)
-                print(sv.solve(cubestring, 19, 3))
-            elif event.unicode == 's':
+                print('Optimal Sol:', sv.solve(cubestring, 20, 1))
                 solvecross()
-                solvef2l()
+                #solvef2l()
                 sol = list(sol)
                 solstring = []
                 j = 1
@@ -588,19 +603,17 @@ while True:
         for j, layer in enumerate(face):
             for k, facelet in enumerate(layer):
                 if facelet == 'U':
-                    disp[i][j][k] = 'white'
+                    disp[i][j][k] = 'yellow'
                 elif facelet == 'R':
-                    disp[i][j][k] = 'red'
+                    disp[i][j][k] = 'orange'
                 elif facelet == 'F':
                     disp[i][j][k] = 'green'
                 elif facelet == 'D':
-                    disp[i][j][k] = 'yellow'
+                    disp[i][j][k] = 'white'
                 elif facelet == 'L':
-                    disp[i][j][k] = 'orange'
+                    disp[i][j][k] = 'red'
                 elif facelet == 'B':
                     disp[i][j][k] = 'blue'
-
-
 
     for i,layer in enumerate(disp[0]):
         for j, facelet in enumerate(layer):
