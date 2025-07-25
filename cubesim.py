@@ -1,5 +1,5 @@
 import pygame
-import twophase.solver as sv
+#import twophase.solver as sv
 import copy
 
 pygame.display.init()
@@ -8,6 +8,11 @@ bg = pygame.display.set_mode(bgsize, 0)
 bg.fill('black')
 
 sol = ''
+
+ollcasefile = open('ollcases.txt', 'r')
+ollcaselist = ollcasefile.read().splitlines()
+ollalgfile = open('ollalgs.txt', 'r')
+ollalglist = ollalgfile.read().splitlines()
 
 facelets = [
     yellow:=[
@@ -60,8 +65,8 @@ pieces = [
     [9, 4, 11]
 ],back:=[
     [15, 14, 13],
-    [10, 22, 8],
-    [9, 3, 7]
+    [8, 22, 10],
+    [7, 3, 9]
 ]
 ]
 
@@ -149,10 +154,10 @@ def d():
 
     white = rotate(white)
     temp1, temp2, temp3 = green[2][0], green[2][1], green[2][2]
-    green[2][0], green[2][1], green[2][2] = orange[2][0], orange[2][1], orange[2][2]
-    orange[2][0], orange[2][1], orange[2][2] = blue[2][0], blue[2][1], blue[2][2]
-    blue[2][0], blue[2][1], blue[2][2] = red[2][0], red[2][1], red[2][2]
-    red[2][0], red[2][1], red[2][2] = temp1, temp2, temp3
+    green[2][0], green[2][1], green[2][2] = red[2][0], red[2][1], red[2][2]
+    red[2][0], red[2][1], red[2][2] = blue[2][0], blue[2][1], blue[2][2]
+    blue[2][0], blue[2][1], blue[2][2] = orange[2][0], orange[2][1], orange[2][2]
+    orange[2][0], orange[2][1], orange[2][2] = temp1, temp2, temp3
 
     down = rotate(down)
     temp1, temp2, temp3 = front[2][0], front[2][1], front[2][2]
@@ -217,8 +222,12 @@ def b():
 
 def move(str, rot = 0, scr = False):
     str = list(str)
+    moves = ['F', 'R', 'B', 'L']
     for i, let in enumerate(str):
         rep = 1
+        if let == 'F' or let == 'R' or let == 'B' or let == 'L':
+            moves.index(let)
+            let = moves[(moves.index(let) + rot)%4]
         if let.isalpha() and i != len(str)-1:
             if str[i+1] == ' ':
                 rep = 1
@@ -272,11 +281,12 @@ def find(face, piecenum):
     for x, row in enumerate(face):
         for y, piece in enumerate(row):
             if piece == piecenum:
-                    return(x, y)
+                return(x, y)
+    print(sol)
 
 def inface(face, piecenum):
-    for x, row in enumerate(face):
-        for y, piece in enumerate(row):
+    for row in face:
+        for piece in row:
             if piece == piecenum:
                 return(True)
     return(False)
@@ -288,86 +298,86 @@ def solvecross():
     while inface(front[1:3], 1) or inface(front[1:3], 2) or inface(front[1:3], 3) or inface(front[1:3], 4):
         while 1 == front[0][1] or 2 == front[0][1] or 3 == front[0][1] or 4 == front[0][1]:
             u()
-        while front[0][1] != 1 and not 2 == front[0][1] and not 3 == front[0][1] and not 4 == front[0][1]:
+        while front[0][1] != 1 and 2 != front[0][1] and 3 != front[0][1] and 4 != front[0][1]:
             f()
 
-    while right[0][1] == 1 or right[0][1] == 2 or right[0][1] == 3 or right [0][1] == 4:
+    while inface(back[1:3], 1) or inface(back[1:3], 2) or inface(back[1:3], 3) or inface(back[1:3], 4):
+        while 1 == back[0][1] or 2 == back[0][1] or 3 == back[0][1] or 4 == back[0][1]:
+            u()
+        while back[0][1] != 1 and back[0][1] != 2 and back[0][1] != 3 and back[0][1] != 4:
+            b()
+
+    while right[2][1] == 1 or right[2][1] == 2 or right[2][1] == 3 or right [2][1] == 4:
         while 1 == right[0][1] or 2 == right[0][1] or 3 == right[0][1] or 4 == right[0][1]:
             u()
         r()
         r()
 
-    while inface(back[1:3], 1) or inface(back[1:3], 2) or inface(back[1:3], 3) or inface(back[1:3], 4):
-        while 1 == back[2][1] or 2 == back[2][1] or 3 == back[2][1] or 4 == back[2][1]:
-            u()
-        while back[2][1] != 1 and back[2][1] != 2 and back[2][1] != 3 and back[2][1] != 4:
-            b()
-
-    while left[0][1] == 1 or left[0][1] == 2 or left[0][1] == 3 or left[0][1] == 4:
-        while 1 == left[2][1] or 2 == left[2][1] or 3 == left[2][1] or 4 == left[2][1]:
+    while left[2][1] == 1 or left[2][1] == 2 or left[2][1] == 3 or left[2][1] == 4:
+        while 1 == left[0][1] or 2 == left[0][1] or 3 == left[0][1] or 4 == left[0][1]:
             u()
         l()
         l()
 
-    gwi, gwj = find(down, 1)
-    if yellow[gwi][gwj] == 'U':
-        while front[2][1] != 1:
-            d()
+    gwi, gwj = find(up, 1)
+    if yellow[gwi][gwj] == 'D':
+        while up[2][1] != 1:
+            u()
         f()
         f()
     else:
-        while down[1][0] != 1:
-            d()
-        l()
-        l()
-        l()
-        f()
-        l()
-
-    rwi, rwj = find(down, 2)
-    if yellow[rwi][rwj] == 'U':
-        while right[2][1] != 2:
-            d()
+        while up[1][2] != 1:
+            u()
         r()
         r()
-    else:
-        while down[0][1] != 2:
-            d()
-        f()
-        f()
-        f()
         r()
         f()
-
-    bwi, bwj = find(down, 3)
-    if yellow[bwi][bwj] == 'U':
-        while back[2][1] != 3:
-            d()
-        b()
-        b()
-    else:
-        while down[1][2] != 3:
-            d()
-        r()
-        r()
-        r()
-        b()
         r()
 
-    owi, owj = find(down, 4)
-    if yellow[owi][owj] == 'U':
-        while left[2][1] != 4:
-            d()
+    owi, owj = find(up, 2)
+    if yellow[owi][owj] == 'D':
+        while up[1][2] != 2:
+            u()
+        r()
+        r()
+    else:
+        while up[0][1] != 2:
+            u()
+        b()
+        b()
+        b()
+        r()
+        b()
+
+    bwi, bwj = find(up, 3)
+    if yellow[bwi][bwj] == 'D':
+        while up[0][1] != 3:
+            u()
+        b()
+        b()
+    else:
+        while up[1][0] != 3:
+            u()
+        l()
+        l()
+        l()
+        b()
+        l()
+
+    rwi, rwj = find(up, 4)
+    if yellow[rwi][rwj] == 'D':
+        while up[1][0] != 4:
+            u()
         l()
         l()
     else:
-        while down[2][1] != 4:
-            d()
-        b()
-        b()
-        b()
+        while up[2][1] != 4:
+            u()
+        f()
+        f()
+        f()
         l()
-        b()
+        f()
 
 def solvef2l():
     global sol
@@ -524,12 +534,23 @@ def solvef2l():
                 d()
             move("B D' B' L B' L' B")
 
+def solveoll():
+    oll = green[0] + orange[0] + blue[0] + red[0]
+    for i in range(4):
+        for j, facelet in enumerate(oll):
+            if facelet != 'U':
+                oll[j] = 'N'
+        for k, ollcase in enumerate(ollcaselist):
+            if ''.join(oll) == ollcase:
+                move(ollalglist[k], rot = i)
+                return
+        oll = oll[3:] + oll[0:3]
 
 
 # test scramble
 #scramble = input("Scramble: ")
-scramble = "F2 D B' R2 D2 F2 D2 B' U2 B' R2 D2 F2 D2 L' U B' D2 B2 R2 D2"
-move(scramble, scr=True)
+scramble = "B D2 B' D2 F D2 F' D2 L2 U F2 L' F L U' L2"
+move(scramble)
 
 while True:
     for event in pygame.event.get():
@@ -549,15 +570,27 @@ while True:
             elif event.unicode == 'p':
                 print(pieces)
             elif event.unicode == 's':
-                cubestring = []
-                for i in facelets:
-                    for j in i:
-                        for k in j:
-                            cubestring.append(k)
-                cubestring = ''.join(cubestring)
-                print('Optimal Sol:', sv.solve(cubestring, 20, 1))
-                solvecross()
+                sol = ''
+#                cubestring = []
+#                for i in facelets:
+#                    for j in i:
+#                        for k in j:
+#                            cubestring.append(k)
+#                cubestring = ''.join(cubestring)
+#                optsol = sv.solve(cubestring, 20, 1)
+#                optsol = list(optsol)
+#                scramble = []
+#                for i in optsol:
+#                    if i.isnumeric():
+#                        i = str(4-int(i))
+#                    scramble.append(i)
+#                scramble.reverse()
+#                print('Scramble:', ''.join(scramble[6:]))
+#                print('Optimal Sol:', ''.join(optsol))
+                #solvecross()
                 #solvef2l()
+                asdf = solveoll()
+                print(asdf)
                 sol = list(sol)
                 solstring = []
                 j = 1
