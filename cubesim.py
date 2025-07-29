@@ -1,6 +1,7 @@
 import pygame
 #import twophase.solver as sv
 import copy
+import random
 
 pygame.display.init()
 bgsize = (830, 630)
@@ -13,6 +14,16 @@ ollcasefile = open('ollcases.txt', 'r')
 ollcaselist = ollcasefile.read().splitlines()
 ollalgfile = open('ollalgs.txt', 'r')
 ollalglist = ollalgfile.read().splitlines()
+
+pllcasefile = open('pllcases.txt', 'r')
+pllcaselist = pllcasefile.read().splitlines()
+pllalgfile = open('pllalgs.txt', 'r')
+pllalglist = pllalgfile.read().splitlines()
+
+f2lcasefile = open('f2lcases.txt', 'r')
+f2lcaselist = f2lcasefile.read().splitlines()
+f2lalgfile = open('f2lalgs.txt', 'r')
+f2lalglist = f2lalgfile.read().splitlines()
 
 facelets = [
     yellow:=[
@@ -220,20 +231,19 @@ def b():
     facelets = [yellow, orange, green, white, red, blue]
     sol += 'B'
 
-def move(str, rot = 0, scr = False):
-    str = list(str)
+def move(movestr, rotation = 0, scr = False):
+    movestr = list(movestr)
     moves = ['F', 'R', 'B', 'L']
-    for i, let in enumerate(str):
+    for i, let in enumerate(movestr):
         rep = 1
         if let == 'F' or let == 'R' or let == 'B' or let == 'L':
-            moves.index(let)
-            let = moves[(moves.index(let) + rot)%4]
-        if let.isalpha() and i != len(str)-1:
-            if str[i+1] == ' ':
+            let = moves[(moves.index(let) + rotation)%4]
+        if let.isalpha() and i != len(movestr)-1:
+            if movestr[i+1] == ' ':
                 rep = 1
-            elif str[i+1] == '2':
+            elif movestr[i+1] == '2':
                 rep = 2
-            elif str[i+1] == "'":
+            elif movestr[i+1] == "'":
                 rep = 3
         if let == 'U':
             if scr:
@@ -269,6 +279,23 @@ def move(str, rot = 0, scr = False):
         elif let == 'B':
             for x in range(rep):
                 b()
+    rotation = 0
+
+def rev(revstr):
+    revstr = revstr.split()
+    revstr.reverse()
+    revstr = ' '.join(revstr)
+    revstr = list(revstr)
+    for i, x in enumerate(revstr):
+        if x.isalpha() and i != len(revstr) - 1:
+            if revstr[i+1] == "'":
+                revstr[i+1] = ' '
+            elif revstr[i+1] == ' ':
+                revstr[i+1] = "'"
+        elif x.isalpha() and i == len(revstr) - 1:
+            revstr.append("'")
+    revstr = ''.join(revstr)
+    return(revstr)
 
 def rotate(face):
     rotatedface = [[face[2][0], face[1][0], face[0][0]],
@@ -379,179 +406,259 @@ def solvecross():
         l()
         f()
 
-def solvef2l():
+def solvef2lpair(rot):
     global sol
+    rot -= 1
+    corner, edge = rot*2+5, rot*2+6
+    sol += '('
+    colors = ['F', 'R', 'B', 'L']
+    faceletfaces = [green, orange, blue, red, green, orange, blue, red]
+    piecenumfaces = [front, right, back, left, front, right, back, left]
 
-    if 5 == back[0][0]:
-        move("R D R'")
-    elif 5 == back[0][2]:
-        move("L' D L")
-    elif 5 == front[0][2]:
-        move("R' D R")
-    if inface(down, 5):
-        while front[2][0] != 5:
-            d()
-        if green[2][0] == "F":
-            move("L D L'")
-        elif green[2][0] == "L":
-            move("L D2 L' D' L D L'")
+    if piecenumfaces[rot][2][2] == corner:
+        cornerloc = 'D'
+        if faceletfaces[rot][2][2] == 'D':
+            cornerorientation = 'W'
+        elif faceletfaces[rot][2][2] == colors[rot]:
+            cornerorientation = 'F'
         else:
-            move("F' D' F")
+            cornerorientation = 'R'
     else:
-        if green[0][0] == "U":
-            move("F' D' F D F' D' F")
-        elif green[0][0] == "L":
-            move("L D L' D' L D L'")
-
-
-    if 7 == back[0][0]:
-        move("R D R'")
-    elif 7 == back[0][2]:
-        move("L' D L")
-    if inface(down, 7):
-        while front[2][2] != 7:
-            d()
-        if green[2][2] == "F":
-            move("R' D' R")
-        elif green[2][2] == "R":
-            move("R' D2 R D R' D' R")
+        cornerloc = 'U'
+        if inface(up, corner):
+            while piecenumfaces[rot][0][2] != corner:
+                u()
+        elif piecenumfaces[rot][2][0] == corner:
+            move("L' U' L", rot)
+        elif piecenumfaces[rot+2][2][0] == corner:
+            move("R' U R U", rot)
+        elif piecenumfaces[rot+2][2][2] == corner:
+            move("L U2 L'", rot)
+        if faceletfaces[rot][0][2] == 'D':
+            cornerorientation = 'W'
+        elif faceletfaces[rot][0][2] == colors[rot]:
+            cornerorientation = 'F'
         else:
-            move("F D F'")
-    else:
-        if green[0][2] == "U":
-            move("F D F' D' F D F'")
-        elif green[0][2] == "L":
-            move("R' D' R D R' D' R")
+            cornerorientation = 'R'
 
+    faceletfaces = [green, orange, blue, red, green, orange, blue, red]
+    piecenumfaces = [front, right, back, left, front, right, back, left]
 
-    if 9 == back[0][2]:
-        move("L' D L")
-    if inface(down, 9):
-        while back[2][0] != 9:
-            d()
-        if blue[2][0] == "B":
-            move("R D R'")
-        elif blue[2][0] == "R":
-            move("R D2 R' D' R D R'")
+    if inface(piecenumfaces[rot], edge):
+        edgei, edgej = find(piecenumfaces[rot], edge)
+        if edgei == 0:
+            edgeloc = 4
+            if faceletfaces[rot][edgei][edgej] == colors[rot]:
+                edgeorientation = 'B'
+            else:
+                edgeorientation = 'G'
         else:
-            move("B' D' B")
-    else:
-        if blue[0][0] == "U":
-            move("B' D' B D B' D' B")
-        elif blue[0][0] == "R":
-            move("R D R' D' R D R'")
-
-
-    if inface(down, 11):
-        while back[2][2] != 11:
-            d()
-        if blue[2][2] == "B":
-            move("L' D' L")
-        elif blue[2][2] == "L":
-            move("L' D2 L D L' D' L")
+            if faceletfaces[rot][edgei][edgej] == colors[rot]:
+                edgeorientation = 'G'
+            else:
+                edgeorientation = 'B'
+            if edgej == 0:
+                edgeloc = 8
+            else:
+                edgeloc = 5
+    elif inface(piecenumfaces[rot+2], edge):
+        edgei, edgej = find(piecenumfaces[rot+2], edge)
+        if edgei == 0:
+            edgeloc = 2
+            if faceletfaces[rot+2][edgei][edgej] == colors[rot]:
+                edgeorientation = 'B'
+            else:
+                edgeorientation = 'G'
         else:
-            move("B D B'")
-    else:
-        if blue[0][0] == "U":
-            move("B D B' D' B D B'")
-        elif blue[0][0] == "L":
-            move("L' D' L D L' D' L")
-
-
-
-    if front[1][0] == 6 and green[1][0] == "G":
-        pass
-    else:
-        if front[1][0] == 6:
-            move("L D L' D' F' D' F")
-        elif front[1][2] == 6:
-            move("R' D' R D F D F'")
-        elif back[1][0] == 6:
-            move("R D R' D' B' D' B")
-        elif back[1][2] == 6:
-            move("L' D' L D B D B'")
-        ogi, ogj = find(down, 6)
-        if yellow[ogi][ogj] == "L":
-            while down[1][2] != 6:
-                d()
-            move("L D' L' F L' F' L")
+            if faceletfaces[rot+2][edgei][edgej] == colors[rot]:
+                edgeorientation = 'G'
+            else:
+                edgeorientation = 'B'
+            if edgej == 0:
+                edgeloc = 6
+            else:
+                edgeloc = 7
+    elif inface(piecenumfaces[rot+1], edge):
+        edgeloc = 1
+        if faceletfaces[(rot+1)%4][0][1] == colors[rot]:
+            edgeorientation = 'B'
         else:
-            while down[2][1] != 6:
-                d()
-            move("F' D F L' F L F'")
-
-
-    if front[1][2] == 8 and green[1][2] == "G":
-        pass
-    else:
-        if front[1][2] == 8:
-            move("R' D' R D F D F'")
-        elif back[1][0] == 8:
-            move("R D R' D' B' D' B")
-        elif back[1][2] == 8:
-            move("L' D' L D B D B'")
-        rgi, rgj = find(down, 8)
-        if yellow[rgi][rgj] == "R":
-            while down[1][0] != 8:
-                d()
-            move("R' D R F' R F R'")
+            edgeorientation = 'G'
+    elif inface(piecenumfaces[rot-1], edge):
+        edgeloc = 3
+        if faceletfaces[(rot+3)%4][0][1] == colors[rot]:
+            edgeorientation = 'B'
         else:
-            while down[2][1] != 8:
-                d()
-            move("F D' F' R F' R' F")
-
-
-    if back[1][0] == 10 and blue[1][0] == "B":
-        pass
+            edgeorientation = 'G'
     else:
-        if back[1][0] == 10:
-            move("R D R' D' B' D' B")
-        elif back[1][2] == 10:
-            move("L' D' L D B D B'")
-        rbi, rbj = find(down, 10)
-        if yellow[rbi][rbj] == "R":
-            while down[1][0] != 10:
-                d()
-            move("R D' R' B R' B' R")
-        else:
-            while down[0][1] != 10:
-                d()
-            move("B' D B R' B R B'")
-
-
-    if back[1][2] == 12 and blue[1][2] == "B":
-        pass
-    else:
-        if back[1][2] == 12:
-            move("L' D' L D B D B'")
-        obi, obj = find(down, 12)
-        if yellow[obi][obj] == "L":
-            while down[1][2] != 12:
-                d()
-            move("L' D L B' L B L'")
-        else:
-            while down[0][1] != 12:
-                d()
-            move("B D' B' L B' L' B")
-
+        print(sol)
+        print('edge', edge, 'not found')
+        print(pieces)
+        print(facelets)
+    
+    f2l = cornerloc + cornerorientation + ' ' + str(edgeloc) + edgeorientation
+    for k, f2lcase in enumerate(f2lcaselist):
+        if ''.join(f2l) == f2lcase:
+            move(f2lalglist[k], rotation = rot)
+            sol += ')'
+            return
+    
 def solveoll():
     oll = green[0] + orange[0] + blue[0] + red[0]
+    for j, facelet in enumerate(oll):
+        if facelet != 'U':
+            oll[j] = 'N'
     for i in range(4):
-        for j, facelet in enumerate(oll):
-            if facelet != 'U':
-                oll[j] = 'N'
         for k, ollcase in enumerate(ollcaselist):
             if ''.join(oll) == ollcase:
-                move(ollalglist[k], rot = i)
+                move(ollalglist[k], rotation = i)
                 return
         oll = oll[3:] + oll[0:3]
 
+def solvepll():
+    pll = green[0] + orange[0] + blue[0] + red[0]
+    colors = ['F', 'R', 'B', 'L']
+    for i in range(4):
+        for j in range(4):
+            for k, pllcase in enumerate(pllcaselist):
+                if ''.join(pll) == pllcase:
+                    move(pllalglist[k], rotation = j)
+                    return
+            pll = pll[3:] + pll[0:3]
+        for l, facelet in enumerate(pll):
+            colors.index(facelet)
+            pll[l] = colors[(colors.index(facelet) + 1)%4]
+
+def auf():
+    while green[0][0] != 'F':
+        u()
+
+def genrandscramble():
+    scr = ''
+    moves = ['R', 'U', 'F', 'L', 'B', 'D']
+    reps = [' ', '2', "'"]
+    for i in range(20):
+        scr += random.choice(moves)
+        scr += random.choice(reps)
+        scr += ' '
+    return scr
+
+'''
+for i, x in enumerate(f2lalglist):
+    x = rev(x)
+    move(x, rotation=2)
+    solvef2l(9, 10)
+    if back[1][2] != 10 or back[2][2] != 9 or blue[1][2] != 'B' or blue[2][2] != 'B':
+        print('Screwup:', i+1, f2lcaselist[i], '\n')
+    facelets = [
+        yellow:=[
+        ['U', 'U', 'U'],
+        ['U', 'U', 'U'],
+        ['U', 'U', 'U']
+    ],orange:=[
+        ['R', 'R', 'R'],
+        ['R', 'R', 'R'],
+        ['R', 'R', 'R']
+    ],green:=[
+        ['F', 'F', 'F'],
+        ['F', 'F', 'F'],
+        ['F', 'F', 'F']
+    ],white:=[
+        ['D', 'D', 'D'],
+        ['D', 'D', 'D'],
+        ['D', 'D', 'D']
+    ],red:=[
+        ['L', 'L', 'L'],
+        ['L', 'L', 'L'],
+        ['L', 'L', 'L']
+    ],blue:=[
+        ['B', 'B', 'B'],
+        ['B', 'B', 'B'],
+        ['B', 'B', 'B']
+    ]
+    ]
+
+    pieces = [
+        up:=[
+        [13, 14, 15],
+        [16, 26, 17],
+        [18, 19, 20]
+    ],right:=[
+        [20, 17, 15],
+        [6, 23, 8],
+        [5, 2, 7]
+    ],front:=[
+        [18, 19, 20],
+        [12, 21, 6],
+        [11, 1, 5]
+    ],down:=[
+        [11, 1, 5],
+        [4, 25, 2],
+        [9, 3, 7]
+    ],left:=[
+        [13, 16, 18],
+        [10, 24, 12],
+        [9, 4, 11]
+    ],back:=[
+        [15, 14, 13],
+        [8, 22, 10],
+        [7, 3, 9]
+    ]
+    ]
+
+'''
 
 # test scramble
-#scramble = input("Scramble: ")
-scramble = "B D2 B' D2 F D2 F' D2 L2 U F2 L' F L U' L2"
-move(scramble)
+#scramble = ""
+#move(scramble, scr=True)
 
+totalmoves = 0
+
+for x in range(100):
+    randomscramble = genrandscramble()
+    move(randomscramble, scr=True)
+    solvecross()
+    solvef2lpair(1)
+    solvef2lpair(2)
+    solvef2lpair(3)
+    solvef2lpair(4)
+    solveoll()
+    solvepll()
+    auf()
+    sol = list(sol)
+    solstring = []
+    j = 1
+    movecount = 1
+    for i, turn in enumerate(sol[0:-1]):
+        if sol[i] == sol[i+1]:
+            sol[i] = ' '
+            j += 1
+        else:
+            j = j % 4
+            if j == 3:
+                j = "'"
+            elif j == 1:
+                j = ' '
+            solstring.append(turn)
+            solstring.append(str(j))
+            solstring.append(' ')
+            movecount += 1
+            j = 1
+    solstring.append(sol[-1])
+    j = j % 4
+    if j == 3:
+        j = "'"
+    elif j == 1:
+        j = ' '
+    solstring.append(str(j))
+    solstring.append(' ')
+    solstring = ''.join(solstring)
+    totalmoves += movecount
+    sol = ''
+
+print(totalmoves/100)
+
+'''
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -567,30 +674,28 @@ while True:
                 l()
             elif event.unicode == 'b':
                 b()
+            elif event.unicode == 'g':
+                randomscramble = genrandscramble()
+                move(randomscramble, scr=True)
+                print('Scramble:', randomscramble)
             elif event.unicode == 'p':
                 print(pieces)
             elif event.unicode == 's':
                 sol = ''
-#                cubestring = []
-#                for i in facelets:
-#                    for j in i:
-#                        for k in j:
-#                            cubestring.append(k)
-#                cubestring = ''.join(cubestring)
-#                optsol = sv.solve(cubestring, 20, 1)
-#                optsol = list(optsol)
-#                scramble = []
-#                for i in optsol:
-#                    if i.isnumeric():
-#                        i = str(4-int(i))
-#                    scramble.append(i)
-#                scramble.reverse()
-#                print('Scramble:', ''.join(scramble[6:]))
-#                print('Optimal Sol:', ''.join(optsol))
-                #solvecross()
-                #solvef2l()
-                asdf = solveoll()
-                print(asdf)
+                solvecross()
+                print('Cross Solved -', sol)
+                solvef2l(5, 6)
+                print('pair 1 Solved -', sol)
+                solvef2l(7, 8)
+                print('pair 2 Solved -', sol)
+                solvef2l(9, 10)
+                print('pair 3 Solved -', sol)
+                solvef2l(11, 12)
+                print('f2l Solved -', sol)
+                solveoll()
+                print('oll Solved -', sol)
+                solvepll()
+                auf()
                 sol = list(sol)
                 solstring = []
                 j = 1
@@ -620,7 +725,9 @@ while True:
                 solstring.append(' ')
                 solstring = ''.join(solstring)
                 print(solstring)
-                print('movecount: ', movecount)
+                print('movecount: ', movecount, '\n\n')
+                sol = ''
+
 
         if event.type == pygame.QUIT:
             quit()
@@ -660,3 +767,4 @@ while True:
             pygame.draw.rect(bg, facelet, (yx + j*60, yy + i*60, 50, 50), width=0)
 
     pygame.display.update()
+ '''
