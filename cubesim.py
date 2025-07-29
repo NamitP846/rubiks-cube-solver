@@ -1,12 +1,12 @@
-import pygame
+#import pygame
 #import twophase.solver as sv
 import copy
 import random
 
-pygame.display.init()
-bgsize = (830, 630)
-bg = pygame.display.set_mode(bgsize, 0)
-bg.fill('black')
+#pygame.display.init()
+#bgsize = (830, 630)
+#bg = pygame.display.set_mode(bgsize, 0)
+#bg.fill('black')
 
 sol = ''
 
@@ -25,28 +25,55 @@ f2lcaselist = f2lcasefile.read().splitlines()
 f2lalgfile = open('f2lalgs.txt', 'r')
 f2lalglist = f2lalgfile.read().splitlines()
 
+permutations = [
+    [1, 2, 3, 0],
+    [1, 2, 0, 3],
+    [1, 3, 2, 0],
+    [1, 3, 0, 2],
+    [1, 0, 2, 3],
+    [1, 0, 3, 2],
+    [2, 1, 3, 0],
+    [2, 1, 0, 3],
+    [2, 3, 1, 0],
+    [2, 3, 0, 1],
+    [2, 0, 1, 3],
+    [2, 0, 3, 1],
+    [3, 1, 2, 0],
+    [3, 1, 0, 2],
+    [3, 2, 1, 0],
+    [3, 2, 0, 1],
+    [3, 0, 1, 2],
+    [3, 0, 2, 1],
+    [0, 1, 2, 3],
+    [0, 1, 3, 2],
+    [0, 2, 1, 3],
+    [0, 2, 3, 1],
+    [0, 3, 1, 2],
+    [0, 3, 2, 1]
+]
+
 facelets = [
-    yellow:=[
+    [
     ['U', 'U', 'U'],
     ['U', 'U', 'U'],
     ['U', 'U', 'U']
-],orange:=[
+],[
     ['R', 'R', 'R'],
     ['R', 'R', 'R'],
     ['R', 'R', 'R']
-],green:=[
+],[
     ['F', 'F', 'F'],
     ['F', 'F', 'F'],
     ['F', 'F', 'F']
-],white:=[
+],[
     ['D', 'D', 'D'],
     ['D', 'D', 'D'],
     ['D', 'D', 'D']
-],red:=[
+],[
     ['L', 'L', 'L'],
     ['L', 'L', 'L'],
     ['L', 'L', 'L']
-],blue:=[
+],[
     ['B', 'B', 'B'],
     ['B', 'B', 'B'],
     ['B', 'B', 'B']
@@ -54,231 +81,182 @@ facelets = [
 ]
 
 pieces = [
-    up:=[
+    [
     [13, 14, 15],
     [16, 26, 17],
     [18, 19, 20]
-],right:=[
+],[
     [20, 17, 15],
     [6, 23, 8],
     [5, 2, 7]
-],front:=[
+],[
     [18, 19, 20],
     [12, 21, 6],
     [11, 1, 5]
-],down:=[
+],[
     [11, 1, 5],
     [4, 25, 2],
     [9, 3, 7]
-],left:=[
+],[
     [13, 16, 18],
     [10, 24, 12],
     [9, 4, 11]
-],back:=[
+],[
     [15, 14, 13],
     [8, 22, 10],
     [7, 3, 9]
 ]
 ]
 
-def u():
-    global facelets
-    global pieces
-    global yellow
-    global up
+solvedfacelets = copy.deepcopy(facelets)
+
+def u(cubefacelets, cubepieces):
+    cubefacelets[0] = rotate(cubefacelets[0])
+    temp1, temp2, temp3 = cubefacelets[2][0][0], cubefacelets[2][0][1], cubefacelets[2][0][2]
+    cubefacelets[2][0][0], cubefacelets[2][0][1], cubefacelets[2][0][2] = cubefacelets[1][0][0], cubefacelets[1][0][1], cubefacelets[1][0][2]
+    cubefacelets[1][0][0], cubefacelets[1][0][1], cubefacelets[1][0][2] = cubefacelets[5][0][0], cubefacelets[5][0][1], cubefacelets[5][0][2]
+    cubefacelets[5][0][0], cubefacelets[5][0][1], cubefacelets[5][0][2] = cubefacelets[4][0][0], cubefacelets[4][0][1], cubefacelets[4][0][2]
+    cubefacelets[4][0][0], cubefacelets[4][0][1], cubefacelets[4][0][2] = temp1, temp2, temp3
+
+    cubepieces[0] = rotate(cubepieces[0])
+    temp1, temp2, temp3 = cubepieces[2][0][0], cubepieces[2][0][1], cubepieces[2][0][2]
+    cubepieces[2][0][0], cubepieces[2][0][1], cubepieces[2][0][2] = cubepieces[1][0][0], cubepieces[1][0][1], cubepieces[1][0][2]
+    cubepieces[1][0][0], cubepieces[1][0][1], cubepieces[1][0][2] = cubepieces[5][0][0], cubepieces[5][0][1], cubepieces[5][0][2]
+    cubepieces[5][0][0], cubepieces[5][0][1], cubepieces[5][0][2] = cubepieces[4][0][0], cubepieces[4][0][1], cubepieces[4][0][2]
+    cubepieces[4][0][0], cubepieces[4][0][1], cubepieces[4][0][2] = temp1, temp2, temp3
+
+    return cubefacelets, cubepieces
+
+def r(cubefacelets, cubepieces):
+    cubefacelets[1] = rotate(cubefacelets[1])
+    temp1, temp2, temp3 = cubefacelets[2][0][2], cubefacelets[2][1][2], cubefacelets[2][2][2]
+    cubefacelets[2][0][2], cubefacelets[2][1][2], cubefacelets[2][2][2] = cubefacelets[3][0][2], cubefacelets[3][1][2], cubefacelets[3][2][2]
+    cubefacelets[3][0][2], cubefacelets[3][1][2], cubefacelets[3][2][2] = cubefacelets[5][2][0], cubefacelets[5][1][0], cubefacelets[5][0][0]
+    cubefacelets[5][2][0], cubefacelets[5][1][0], cubefacelets[5][0][0] = cubefacelets[0][0][2], cubefacelets[0][1][2], cubefacelets[0][2][2]
+    cubefacelets[0][0][2], cubefacelets[0][1][2], cubefacelets[0][2][2] = temp1, temp2, temp3
+
+    cubepieces[1] = rotate(cubepieces[1])
+    temp1, temp2, temp3 = cubepieces[2][0][2], cubepieces[2][1][2], cubepieces[2][2][2]
+    cubepieces[2][0][2], cubepieces[2][1][2], cubepieces[2][2][2] = cubepieces[3][0][2], cubepieces[3][1][2], cubepieces[3][2][2]
+    cubepieces[3][0][2], cubepieces[3][1][2], cubepieces[3][2][2] = cubepieces[5][2][0], cubepieces[5][1][0], cubepieces[5][0][0]
+    cubepieces[5][2][0], cubepieces[5][1][0], cubepieces[5][0][0] = cubepieces[0][0][2], cubepieces[0][1][2], cubepieces[0][2][2]
+    cubepieces[0][0][2], cubepieces[0][1][2], cubepieces[0][2][2] = temp1, temp2, temp3
+
+    return cubefacelets, cubepieces
+
+def f(cubefacelets, cubepieces):
+    cubefacelets[2] = rotate(cubefacelets[2])
+    temp1, temp2, temp3 = cubefacelets[3][0][0], cubefacelets[3][0][1], cubefacelets[3][0][2]
+    cubefacelets[3][0][0], cubefacelets[3][0][1], cubefacelets[3][0][2] = cubefacelets[1][2][0], cubefacelets[1][1][0], cubefacelets[1][0][0]
+    cubefacelets[1][2][0], cubefacelets[1][1][0], cubefacelets[1][0][0] = cubefacelets[0][2][2], cubefacelets[0][2][1], cubefacelets[0][2][0]
+    cubefacelets[0][2][2], cubefacelets[0][2][1], cubefacelets[0][2][0] = cubefacelets[4][0][2], cubefacelets[4][1][2], cubefacelets[4][2][2]
+    cubefacelets[4][0][2], cubefacelets[4][1][2], cubefacelets[4][2][2] = temp1, temp2, temp3
+
+    cubepieces[2] = rotate(cubepieces[2])
+    temp1, temp2, temp3 = cubepieces[3][0][0], cubepieces[3][0][1], cubepieces[3][0][2]
+    cubepieces[3][0][0], cubepieces[3][0][1], cubepieces[3][0][2] = cubepieces[1][2][0], cubepieces[1][1][0], cubepieces[1][0][0]
+    cubepieces[1][2][0], cubepieces[1][1][0], cubepieces[1][0][0] = cubepieces[0][2][2], cubepieces[0][2][1], cubepieces[0][2][0]
+    cubepieces[0][2][2], cubepieces[0][2][1], cubepieces[0][2][0] = cubepieces[4][0][2], cubepieces[4][1][2], cubepieces[4][2][2]
+    cubepieces[4][0][2], cubepieces[4][1][2], cubepieces[4][2][2] = temp1, temp2, temp3
+
+    return cubefacelets, cubepieces
+
+def d(cubefacelets, cubepieces):
+    cubefacelets[3] = rotate(cubefacelets[3])
+    temp1, temp2, temp3 = cubefacelets[2][2][0], cubefacelets[2][2][1], cubefacelets[2][2][2]
+    cubefacelets[2][2][0], cubefacelets[2][2][1], cubefacelets[2][2][2] = cubefacelets[4][2][0], cubefacelets[4][2][1], cubefacelets[4][2][2]
+    cubefacelets[4][2][0], cubefacelets[4][2][1], cubefacelets[4][2][2] = cubefacelets[5][2][0], cubefacelets[5][2][1], cubefacelets[5][2][2]
+    cubefacelets[5][2][0], cubefacelets[5][2][1], cubefacelets[5][2][2] = cubefacelets[1][2][0], cubefacelets[1][2][1], cubefacelets[1][2][2]
+    cubefacelets[1][2][0], cubefacelets[1][2][1], cubefacelets[1][2][2] = temp1, temp2, temp3
+
+    cubepieces[3] = rotate(cubepieces[3])
+    temp1, temp2, temp3 = cubepieces[2][2][0], cubepieces[2][2][1], cubepieces[2][2][2]
+    cubepieces[2][2][0], cubepieces[2][2][1], cubepieces[2][2][2] = cubepieces[4][2][0], cubepieces[4][2][1], cubepieces[4][2][2]
+    cubepieces[4][2][0], cubepieces[4][2][1], cubepieces[4][2][2] = cubepieces[5][2][0], cubepieces[5][2][1], cubepieces[5][2][2]
+    cubepieces[5][2][0], cubepieces[5][2][1], cubepieces[5][2][2] = cubepieces[1][2][0], cubepieces[1][2][1], cubepieces[1][2][2]
+    cubepieces[1][2][0], cubepieces[1][2][1], cubepieces[1][2][2] = temp1, temp2, temp3
+
+    return cubefacelets, cubepieces
+
+def l(cubefacelets, cubepieces):
+    cubefacelets[4] = rotate(cubefacelets[4])
+    temp1, temp2, temp3 = cubefacelets[2][0][0], cubefacelets[2][1][0], cubefacelets[2][2][0]
+    cubefacelets[2][0][0], cubefacelets[2][1][0], cubefacelets[2][2][0] = cubefacelets[0][0][0], cubefacelets[0][1][0], cubefacelets[0][2][0]
+    cubefacelets[0][0][0], cubefacelets[0][1][0], cubefacelets[0][2][0] = cubefacelets[5][2][2], cubefacelets[5][1][2], cubefacelets[5][0][2]
+    cubefacelets[5][2][2], cubefacelets[5][1][2], cubefacelets[5][0][2] = cubefacelets[3][0][0], cubefacelets[3][1][0], cubefacelets[3][2][0]
+    cubefacelets[3][0][0], cubefacelets[3][1][0], cubefacelets[3][2][0] = temp1, temp2, temp3
+
+    cubepieces[4] = rotate(cubepieces[4])
+    temp1, temp2, temp3 = cubepieces[2][0][0], cubepieces[2][1][0], cubepieces[2][2][0]
+    cubepieces[2][0][0], cubepieces[2][1][0], cubepieces[2][2][0] = cubepieces[0][0][0], cubepieces[0][1][0], cubepieces[0][2][0]
+    cubepieces[0][0][0], cubepieces[0][1][0], cubepieces[0][2][0] = cubepieces[5][2][2], cubepieces[5][1][2], cubepieces[5][0][2]
+    cubepieces[5][2][2], cubepieces[5][1][2], cubepieces[5][0][2] = cubepieces[3][0][0], cubepieces[3][1][0], cubepieces[3][2][0]
+    cubepieces[3][0][0], cubepieces[3][1][0], cubepieces[3][2][0] = temp1, temp2, temp3
+
+    return cubefacelets, cubepieces
+
+def b(cubefacelets, cubepieces):
+    cubefacelets[5] = rotate(cubefacelets[5])
+    temp1, temp2, temp3 = cubefacelets[4][0][0], cubefacelets[4][1][0], cubefacelets[4][2][0]
+    cubefacelets[4][0][0], cubefacelets[4][1][0], cubefacelets[4][2][0] = cubefacelets[0][0][2], cubefacelets[0][0][1], cubefacelets[0][0][0]
+    cubefacelets[0][0][2], cubefacelets[0][0][1], cubefacelets[0][0][0] = cubefacelets[1][2][2], cubefacelets[1][1][2], cubefacelets[1][0][2]
+    cubefacelets[1][2][2], cubefacelets[1][1][2], cubefacelets[1][0][2] = cubefacelets[3][2][0], cubefacelets[3][2][1], cubefacelets[3][2][2]
+    cubefacelets[3][2][0], cubefacelets[3][2][1], cubefacelets[3][2][2] = temp1, temp2, temp3
+
+    cubepieces[5] = rotate(cubepieces[5])
+    temp1, temp2, temp3 = cubepieces[4][0][0], cubepieces[4][1][0], cubepieces[4][2][0]
+    cubepieces[4][0][0], cubepieces[4][1][0], cubepieces[4][2][0] = cubepieces[0][0][2], cubepieces[0][0][1], cubepieces[0][0][0]
+    cubepieces[0][0][2], cubepieces[0][0][1], cubepieces[0][0][0] = cubepieces[1][2][2], cubepieces[1][1][2], cubepieces[1][0][2]
+    cubepieces[1][2][2], cubepieces[1][1][2], cubepieces[1][0][2] = cubepieces[3][2][0], cubepieces[3][2][1], cubepieces[3][2][2]
+    cubepieces[3][2][0], cubepieces[3][2][1], cubepieces[3][2][2] = temp1, temp2, temp3
+    
+    return cubefacelets, cubepieces
+
+def move(cubefacelets, cubepieces, movestr, rotation = 0, scr = False):
     global sol
-
-    yellow = rotate(yellow)
-    temp1, temp2, temp3 = green[0][0], green[0][1], green[0][2]
-    green[0][0], green[0][1], green[0][2] = orange[0][0], orange[0][1], orange[0][2]
-    orange[0][0], orange[0][1], orange[0][2] = blue[0][0], blue[0][1], blue[0][2]
-    blue[0][0], blue[0][1], blue[0][2] = red[0][0], red[0][1], red[0][2]
-    red[0][0], red[0][1], red[0][2] = temp1, temp2, temp3
-
-    up = rotate(up)
-    temp1, temp2, temp3 = front[0][0], front[0][1], front[0][2]
-    front[0][0], front[0][1], front[0][2] = right[0][0], right[0][1], right[0][2]
-    right[0][0], right[0][1], right[0][2] = back[0][0], back[0][1], back[0][2]
-    back[0][0], back[0][1], back[0][2] = left[0][0], left[0][1], left[0][2]
-    left[0][0], left[0][1], left[0][2] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'U'
-
-def r():
-    global facelets
-    global pieces
-    global orange
-    global right
-    global sol
-
-    orange = rotate(orange)
-    temp1, temp2, temp3 = green[0][2], green[1][2], green[2][2]
-    green[0][2], green[1][2], green[2][2] = white[0][2], white[1][2], white[2][2]
-    white[0][2], white[1][2], white[2][2] = blue[2][0], blue[1][0], blue[0][0]
-    blue[2][0], blue[1][0], blue[0][0] = yellow[0][2], yellow[1][2], yellow[2][2]
-    yellow[0][2], yellow[1][2], yellow[2][2] = temp1, temp2, temp3
-
-    right = rotate(right)
-    temp1, temp2, temp3 = front[0][2], front[1][2], front[2][2]
-    front[0][2], front[1][2], front[2][2] = down[0][2], down[1][2], down[2][2]
-    down[0][2], down[1][2], down[2][2] = back[2][0], back[1][0], back[0][0]
-    back[2][0], back[1][0], back[0][0] = up[0][2], up[1][2], up[2][2]
-    up[0][2], up[1][2], up[2][2] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'R'
-
-def f():
-    global facelets
-    global pieces
-    global green
-    global front
-    global sol
-
-    green = rotate(green)
-    temp1, temp2, temp3 = white[0][0], white[0][1], white[0][2]
-    white[0][0], white[0][1], white[0][2] = orange[2][0], orange[1][0], orange[0][0]
-    orange[2][0], orange[1][0], orange[0][0] = yellow[2][2], yellow[2][1], yellow[2][0]
-    yellow[2][2], yellow[2][1], yellow[2][0] = red[0][2], red[1][2], red[2][2]
-    red[0][2], red[1][2], red[2][2] = temp1, temp2, temp3
-
-    front = rotate(front)
-    temp1, temp2, temp3 = down[0][0], down[0][1], down[0][2]
-    down[0][0], down[0][1], down[0][2] = right[2][0], right[1][0], right[0][0]
-    right[2][0], right[1][0], right[0][0] = up[2][2], up[2][1], up[2][0]
-    up[2][2], up[2][1], up[2][0] = left[0][2], left[1][2], left[2][2]
-    left[0][2], left[1][2], left[2][2] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'F'
-
-def d():
-    global facelets
-    global pieces
-    global white
-    global down
-    global sol
-
-    white = rotate(white)
-    temp1, temp2, temp3 = green[2][0], green[2][1], green[2][2]
-    green[2][0], green[2][1], green[2][2] = red[2][0], red[2][1], red[2][2]
-    red[2][0], red[2][1], red[2][2] = blue[2][0], blue[2][1], blue[2][2]
-    blue[2][0], blue[2][1], blue[2][2] = orange[2][0], orange[2][1], orange[2][2]
-    orange[2][0], orange[2][1], orange[2][2] = temp1, temp2, temp3
-
-    down = rotate(down)
-    temp1, temp2, temp3 = front[2][0], front[2][1], front[2][2]
-    front[2][0], front[2][1], front[2][2] = left[2][0], left[2][1], left[2][2]
-    left[2][0], left[2][1], left[2][2] = back[2][0], back[2][1], back[2][2]
-    back[2][0], back[2][1], back[2][2] = right[2][0], right[2][1], right[2][2]
-    right[2][0], right[2][1], right[2][2] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'D'
-
-def l():
-    global facelets
-    global pieces
-    global red
-    global left
-    global sol
-
-    red = rotate(red)
-    temp1, temp2, temp3 = green[0][0], green[1][0], green[2][0]
-    green[0][0], green[1][0], green[2][0] = yellow[0][0], yellow[1][0], yellow[2][0]
-    yellow[0][0], yellow[1][0], yellow[2][0] = blue[2][2], blue[1][2], blue[0][2]
-    blue[2][2], blue[1][2], blue[0][2] = white[0][0], white[1][0], white[2][0]
-    white[0][0], white[1][0], white[2][0] = temp1, temp2, temp3
-
-    left = rotate(left)
-    temp1, temp2, temp3 = front[0][0], front[1][0], front[2][0]
-    front[0][0], front[1][0], front[2][0] = up[0][0], up[1][0], up[2][0]
-    up[0][0], up[1][0], up[2][0] = back[2][2], back[1][2], back[0][2]
-    back[2][2], back[1][2], back[0][2] = down[0][0], down[1][0], down[2][0]
-    down[0][0], down[1][0], down[2][0] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'L'
-
-def b():
-    global facelets
-    global pieces
-    global blue
-    global back
-    global sol
-
-    blue = rotate(blue)
-    temp1, temp2, temp3 = red[0][0], red[1][0], red[2][0]
-    red[0][0], red[1][0], red[2][0] = yellow[0][2], yellow[0][1], yellow[0][0]
-    yellow[0][2], yellow[0][1], yellow[0][0] = orange[2][2], orange[1][2], orange[0][2]
-    orange[2][2], orange[1][2], orange[0][2] = white[2][0], white[2][1], white[2][2]
-    white[2][0], white[2][1], white[2][2] = temp1, temp2, temp3
-
-    back = rotate(back)
-    temp1, temp2, temp3 = left[0][0], left[1][0], left[2][0]
-    left[0][0], left[1][0], left[2][0] = up[0][2], up[0][1], up[0][0]
-    up[0][2], up[0][1], up[0][0] = right[2][2], right[1][2], right[0][2]
-    right[2][2], right[1][2], right[0][2] = down[2][0], down[2][1], down[2][2]
-    down[2][0], down[2][1], down[2][2] = temp1, temp2, temp3
-
-    pieces = [up, right, front, down, left, back]
-    facelets = [yellow, orange, green, white, red, blue]
-    sol += 'B'
-
-def move(movestr, rotation = 0, scr = False):
     movestr = list(movestr)
     moves = ['F', 'R', 'B', 'L']
     for i, let in enumerate(movestr):
         rep = 1
         if let == 'F' or let == 'R' or let == 'B' or let == 'L':
             let = moves[(moves.index(let) + rotation)%4]
-        if let.isalpha() and i != len(movestr)-1:
-            if movestr[i+1] == ' ':
-                rep = 1
-            elif movestr[i+1] == '2':
-                rep = 2
-            elif movestr[i+1] == "'":
-                rep = 3
+        if let.isalpha():
+            sol = sol + let + movestr[i+1] + ' '
+            rep = int(movestr[i+1])
         if let == 'U':
             if scr:
                 for x in range(rep):
-                    d()
+                    cubefacelets, cubepieces = d(cubefacelets, cubepieces)
             else:
                 for x in range(rep):
-                    u()
+                    cubefacelets, cubepieces = u(cubefacelets, cubepieces)
         elif let == 'R':
             if scr:
                 for x in range(rep):
-                    l()
+                    cubefacelets, cubepieces = l(cubefacelets, cubepieces)
             else:
                 for x in range(rep):
-                    r()
+                    cubefacelets, cubepieces = r(cubefacelets, cubepieces)
         elif let == 'F':
             for x in range(rep):
-                f()
+                cubefacelets, cubepieces = f(cubefacelets, cubepieces)
         elif let == 'D':
             if scr:
                 for x in range(rep):
-                    u()
+                    cubefacelets, cubepieces = u(cubefacelets, cubepieces)
             else:
                 for x in range(rep):
-                    d()
+                    cubefacelets, cubepieces = d(cubefacelets, cubepieces)
         elif let == 'L':
             if scr:
                 for x in range(rep):
-                    r()
+                    cubefacelets, cubepieces = r(cubefacelets, cubepieces)
             else:
                 for x in range(rep):
-                    l()
+                    cubefacelets, cubepieces = l(cubefacelets, cubepieces)
         elif let == 'B':
             for x in range(rep):
-                b()
+                cubefacelets, cubepieces = b(cubefacelets, cubepieces)
     rotation = 0
 
 def rev(revstr):
@@ -318,102 +296,77 @@ def inface(face, piecenum):
                 return(True)
     return(False)
 
-def solvecross():
+def solvecrosspiece(cubefacelets, cubepieces):
     global sol
     sol = ''
-    # move cross pieces to yellow layer
-    while inface(front[1:3], 1) or inface(front[1:3], 2) or inface(front[1:3], 3) or inface(front[1:3], 4):
-        while 1 == front[0][1] or 2 == front[0][1] or 3 == front[0][1] or 4 == front[0][1]:
-            u()
-        while front[0][1] != 1 and 2 != front[0][1] and 3 != front[0][1] and 4 != front[0][1]:
-            f()
+    # move cross pieces to cubefacelets[0] layer
+    while inface(cubepieces[2][1:3], 1) or inface(cubepieces[2][1:3], 2) or inface(cubepieces[2][1:3], 3) or inface(cubepieces[2][1:3], 4):
+        while 1 == cubepieces[2][0][1] or 2 == cubepieces[2][0][1] or 3 == cubepieces[2][0][1] or 4 == cubepieces[2][0][1]:
+            move(cubefacelets, cubepieces, "U1 ")
+        while cubepieces[2][0][1] != 1 and 2 != cubepieces[2][0][1] and 3 != cubepieces[2][0][1] and 4 != cubepieces[2][0][1]:
+            move(cubefacelets, cubepieces, "F1 ")
 
-    while inface(back[1:3], 1) or inface(back[1:3], 2) or inface(back[1:3], 3) or inface(back[1:3], 4):
-        while 1 == back[0][1] or 2 == back[0][1] or 3 == back[0][1] or 4 == back[0][1]:
-            u()
-        while back[0][1] != 1 and back[0][1] != 2 and back[0][1] != 3 and back[0][1] != 4:
-            b()
+    while inface(cubepieces[5][1:3], 1) or inface(cubepieces[5][1:3], 2) or inface(cubepieces[5][1:3], 3) or inface(cubepieces[5][1:3], 4):
+        while 1 == cubepieces[5][0][1] or 2 == cubepieces[5][0][1] or 3 == cubepieces[5][0][1] or 4 == cubepieces[5][0][1]:
+            move(cubefacelets, cubepieces, "U1 ")
+        while cubepieces[5][0][1] != 1 and cubepieces[5][0][1] != 2 and cubepieces[5][0][1] != 3 and cubepieces[5][0][1] != 4:
+            move(cubefacelets, cubepieces, "B1 ")
 
-    while right[2][1] == 1 or right[2][1] == 2 or right[2][1] == 3 or right [2][1] == 4:
-        while 1 == right[0][1] or 2 == right[0][1] or 3 == right[0][1] or 4 == right[0][1]:
-            u()
-        r()
-        r()
+    while cubepieces[1][2][1] == 1 or cubepieces[1][2][1] == 2 or cubepieces[1][2][1] == 3 or cubepieces[1] [2][1] == 4:
+        while 1 == cubepieces[1][0][1] or 2 == cubepieces[1][0][1] or 3 == cubepieces[1][0][1] or 4 == cubepieces[1][0][1]:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "R2 ")
 
-    while left[2][1] == 1 or left[2][1] == 2 or left[2][1] == 3 or left[2][1] == 4:
-        while 1 == left[0][1] or 2 == left[0][1] or 3 == left[0][1] or 4 == left[0][1]:
-            u()
-        l()
-        l()
+    while cubepieces[4][2][1] == 1 or cubepieces[4][2][1] == 2 or cubepieces[4][2][1] == 3 or cubepieces[4][2][1] == 4:
+        while 1 == cubepieces[4][0][1] or 2 == cubepieces[4][0][1] or 3 == cubepieces[4][0][1] or 4 == cubepieces[4][0][1]:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "L2 ")
 
-    gwi, gwj = find(up, 1)
-    if yellow[gwi][gwj] == 'D':
-        while up[2][1] != 1:
-            u()
-        f()
-        f()
+    gwi, gwj = find(cubepieces[0], 1)
+    if cubefacelets[0][gwi][gwj] == 'D':
+        while cubepieces[0][2][1] != 1:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "F2 ")
     else:
-        while up[1][2] != 1:
-            u()
-        r()
-        r()
-        r()
-        f()
-        r()
+        while cubepieces[0][1][2] != 1:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "R3 F1 R1 ")
 
-    owi, owj = find(up, 2)
-    if yellow[owi][owj] == 'D':
-        while up[1][2] != 2:
-            u()
-        r()
-        r()
+    owi, owj = find(cubepieces[0], 2)
+    if cubefacelets[0][owi][owj] == 'D':
+        while cubepieces[0][1][2] != 2:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "R2 ")
     else:
-        while up[0][1] != 2:
-            u()
-        b()
-        b()
-        b()
-        r()
-        b()
+        while cubepieces[0][0][1] != 2:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "B3 R1 B1 ")
 
-    bwi, bwj = find(up, 3)
-    if yellow[bwi][bwj] == 'D':
-        while up[0][1] != 3:
-            u()
-        b()
-        b()
+    bwi, bwj = find(cubepieces[0], 3)
+    if cubefacelets[0][bwi][bwj] == 'D':
+        while cubepieces[0][0][1] != 3:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "B2 ")
     else:
-        while up[1][0] != 3:
-            u()
-        l()
-        l()
-        l()
-        b()
-        l()
+        while cubepieces[0][1][0] != 3:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "L3 B1 L1 ")
 
-    rwi, rwj = find(up, 4)
-    if yellow[rwi][rwj] == 'D':
-        while up[1][0] != 4:
-            u()
-        l()
-        l()
+    rwi, rwj = find(cubepieces[0], 4)
+    if cubefacelets[0][rwi][rwj] == 'D':
+        while cubepieces[0][1][0] != 4:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "L2 ")
     else:
-        while up[2][1] != 4:
-            u()
-        f()
-        f()
-        f()
-        l()
-        f()
+        while cubepieces[0][2][1] != 4:
+            move(cubefacelets, cubepieces, "U1 ")
+        move(cubefacelets, cubepieces, "F3 L1 F1 ")
 
-def solvef2lpair(rot):
-    global sol
-    rot -= 1
+def solvef2lpair(cubefacelets, cubepieces, rot):
     corner, edge = rot*2+5, rot*2+6
-    sol += '('
     colors = ['F', 'R', 'B', 'L']
-    faceletfaces = [green, orange, blue, red, green, orange, blue, red]
-    piecenumfaces = [front, right, back, left, front, right, back, left]
+    faceletfaces = [cubefacelets[2], cubefacelets[1], cubefacelets[5], cubefacelets[4], cubefacelets[2], cubefacelets[1], cubefacelets[5], cubefacelets[4]]
+    piecenumfaces = [cubepieces[2], cubepieces[1], cubepieces[5], cubepieces[4], cubepieces[2], cubepieces[1], cubepieces[5], cubepieces[4]]
 
     if piecenumfaces[rot][2][2] == corner:
         cornerloc = 'D'
@@ -425,15 +378,15 @@ def solvef2lpair(rot):
             cornerorientation = 'R'
     else:
         cornerloc = 'U'
-        if inface(up, corner):
+        if inface(cubepieces[0], corner):
             while piecenumfaces[rot][0][2] != corner:
-                u()
+                u(cubefacelets, cubepieces)
         elif piecenumfaces[rot][2][0] == corner:
-            move("L' U' L", rot)
+            move(cubefacelets, cubepieces, "L3 U3 L1 ", rot)
         elif piecenumfaces[rot+2][2][0] == corner:
-            move("R' U R U", rot)
+            move(cubefacelets, cubepieces, "R3 U1  R1  U1 ", rot)
         elif piecenumfaces[rot+2][2][2] == corner:
-            move("L U2 L'", rot)
+            move(cubefacelets, cubepieces, "L1 U2 L3 ", rot)
         if faceletfaces[rot][0][2] == 'D':
             cornerorientation = 'W'
         elif faceletfaces[rot][0][2] == colors[rot]:
@@ -441,8 +394,8 @@ def solvef2lpair(rot):
         else:
             cornerorientation = 'R'
 
-    faceletfaces = [green, orange, blue, red, green, orange, blue, red]
-    piecenumfaces = [front, right, back, left, front, right, back, left]
+    faceletfaces = [cubefacelets[2], cubefacelets[1], cubefacelets[5], cubefacelets[4], cubefacelets[2], cubefacelets[1], cubefacelets[5], cubefacelets[4]]
+    piecenumfaces = [cubepieces[2], cubepieces[1], cubepieces[5], cubepieces[4], cubepieces[2], cubepieces[1], cubepieces[5], cubepieces[4]]
 
     if inface(piecenumfaces[rot], edge):
         edgei, edgej = find(piecenumfaces[rot], edge)
@@ -499,169 +452,96 @@ def solvef2lpair(rot):
     f2l = cornerloc + cornerorientation + ' ' + str(edgeloc) + edgeorientation
     for k, f2lcase in enumerate(f2lcaselist):
         if ''.join(f2l) == f2lcase:
-            move(f2lalglist[k], rotation = rot)
-            sol += ')'
+            move(cubefacelets, cubepieces, f2lalglist[k], rotation = rot)
             return
-    
-def solveoll():
-    oll = green[0] + orange[0] + blue[0] + red[0]
+
+def solveoll(cubefacelets, cubepieces):
+    global sol
+    oll = cubefacelets[2][0] + cubefacelets[1][0] + cubefacelets[5][0] + cubefacelets[4][0]
     for j, facelet in enumerate(oll):
         if facelet != 'U':
             oll[j] = 'N'
     for i in range(4):
         for k, ollcase in enumerate(ollcaselist):
             if ''.join(oll) == ollcase:
-                move(ollalglist[k], rotation = i)
+                move(cubefacelets, cubepieces, ollalglist[k], rotation = i)
                 return
         oll = oll[3:] + oll[0:3]
 
-def solvepll():
-    pll = green[0] + orange[0] + blue[0] + red[0]
+def solvepll(cubefacelets, cubepieces):
+    pll = cubefacelets[2][0] + cubefacelets[1][0] + cubefacelets[5][0] + cubefacelets[4][0]
     colors = ['F', 'R', 'B', 'L']
     for i in range(4):
         for j in range(4):
             for k, pllcase in enumerate(pllcaselist):
                 if ''.join(pll) == pllcase:
-                    move(pllalglist[k], rotation = j)
+                    move(cubefacelets, cubepieces, pllalglist[k], rotation = j)
                     return
             pll = pll[3:] + pll[0:3]
         for l, facelet in enumerate(pll):
             colors.index(facelet)
             pll[l] = colors[(colors.index(facelet) + 1)%4]
 
-def auf():
-    while green[0][0] != 'F':
-        u()
+def auf(cubefacelets, cubepieces):
+    while cubefacelets[2][0][0] != 'F':
+        move(cubefacelets, cubepieces, "U1 ")
 
 def genrandscramble():
     scr = ''
     moves = ['R', 'U', 'F', 'L', 'B', 'D']
-    reps = [' ', '2', "'"]
+    reps = ['1', '2', '3']
     for i in range(20):
         scr += random.choice(moves)
         scr += random.choice(reps)
         scr += ' '
     return scr
 
-'''
-for i, x in enumerate(f2lalglist):
-    x = rev(x)
-    move(x, rotation=2)
-    solvef2l(9, 10)
-    if back[1][2] != 10 or back[2][2] != 9 or blue[1][2] != 'B' or blue[2][2] != 'B':
-        print('Screwup:', i+1, f2lcaselist[i], '\n')
-    facelets = [
-        yellow:=[
-        ['U', 'U', 'U'],
-        ['U', 'U', 'U'],
-        ['U', 'U', 'U']
-    ],orange:=[
-        ['R', 'R', 'R'],
-        ['R', 'R', 'R'],
-        ['R', 'R', 'R']
-    ],green:=[
-        ['F', 'F', 'F'],
-        ['F', 'F', 'F'],
-        ['F', 'F', 'F']
-    ],white:=[
-        ['D', 'D', 'D'],
-        ['D', 'D', 'D'],
-        ['D', 'D', 'D']
-    ],red:=[
-        ['L', 'L', 'L'],
-        ['L', 'L', 'L'],
-        ['L', 'L', 'L']
-    ],blue:=[
-        ['B', 'B', 'B'],
-        ['B', 'B', 'B'],
-        ['B', 'B', 'B']
-    ]
-    ]
-
-    pieces = [
-        up:=[
-        [13, 14, 15],
-        [16, 26, 17],
-        [18, 19, 20]
-    ],right:=[
-        [20, 17, 15],
-        [6, 23, 8],
-        [5, 2, 7]
-    ],front:=[
-        [18, 19, 20],
-        [12, 21, 6],
-        [11, 1, 5]
-    ],down:=[
-        [11, 1, 5],
-        [4, 25, 2],
-        [9, 3, 7]
-    ],left:=[
-        [13, 16, 18],
-        [10, 24, 12],
-        [9, 4, 11]
-    ],back:=[
-        [15, 14, 13],
-        [8, 22, 10],
-        [7, 3, 9]
-    ]
-    ]
-
-'''
-
 # test scramble
 #scramble = ""
-#move(scramble, scr=True)
+#move(facelets, pieces, scramble, scr=True)
 
 totalmoves = 0
 
-for x in range(100):
+for x in range(10000):
     randomscramble = genrandscramble()
-    move(randomscramble, scr=True)
-    solvecross()
-    solvef2lpair(1)
-    solvef2lpair(2)
-    solvef2lpair(3)
-    solvef2lpair(4)
-    solveoll()
-    solvepll()
-    auf()
-    sol = list(sol)
-    solstring = []
-    j = 1
-    movecount = 1
-    for i, turn in enumerate(sol[0:-1]):
-        if sol[i] == sol[i+1]:
-            sol[i] = ' '
-            j += 1
-        else:
-            j = j % 4
-            if j == 3:
-                j = "'"
-            elif j == 1:
-                j = ' '
-            solstring.append(turn)
-            solstring.append(str(j))
-            solstring.append(' ')
-            movecount += 1
-            j = 1
-    solstring.append(sol[-1])
-    j = j % 4
-    if j == 3:
-        j = "'"
-    elif j == 1:
-        j = ' '
-    solstring.append(str(j))
-    solstring.append(' ')
-    solstring = ''.join(solstring)
+    move(facelets, pieces, randomscramble, scr=True)
+    sol = ' '
+    solvecrosspiece(facelets, pieces)
+    solvef2lpair(facelets, pieces, 0)
+    solvef2lpair(facelets, pieces, 1)
+    solvef2lpair(facelets, pieces, 2)
+    solvef2lpair(facelets, pieces, 3)
+    solveoll(facelets, pieces)
+    solvepll(facelets, pieces)
+    auf(facelets, pieces)
+    if facelets != solvedfacelets:
+        print('solving error')
+    solmoves = list(sol[0::3])
+    solnums = list(sol[1::3])
+    for i, y in enumerate(solmoves[0:-1]):
+        if y == solmoves[i+1]:
+            solmoves[i]  = ' '
+            solnums[i+1] = int(solnums[i]) + int(solnums[i+1])
+            solnums[i] = ' '
+    solnums = [i for i in solnums if i != ' ']
+    solmoves = [i for i in solmoves if i != ' ']
+
+    sol = ''
+    for i in range(len(solmoves)):
+        sol += solmoves[i]
+        sol += str(solnums[i])
+        sol += ' '
+        
+    movecount = len(sol)/3
     totalmoves += movecount
     sol = ''
 
-print(totalmoves/100)
+print(totalmoves/10000)
 
 '''
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYcubepieces[3]:
             if event.unicode == 'u':
                 u()
             elif event.unicode == 'r':
@@ -676,7 +556,7 @@ while True:
                 b()
             elif event.unicode == 'g':
                 randomscramble = genrandscramble()
-                move(randomscramble, scr=True)
+                move(cubefacelets, cubepieces, randomscramble, scr=True)
                 print('Scramble:', randomscramble)
             elif event.unicode == 'p':
                 print(pieces)
@@ -743,17 +623,17 @@ while True:
         for j, layer in enumerate(face):
             for k, facelet in enumerate(layer):
                 if facelet == 'U':
-                    disp[i][j][k] = 'yellow'
+                    disp[i][j][k] = 'cubefacelets[0]'
                 elif facelet == 'R':
-                    disp[i][j][k] = 'orange'
+                    disp[i][j][k] = 'cubefacelets[1]'
                 elif facelet == 'F':
-                    disp[i][j][k] = 'green'
+                    disp[i][j][k] = 'cubefacelets[2]'
                 elif facelet == 'D':
-                    disp[i][j][k] = 'white'
+                    disp[i][j][k] = 'cubefacelets[3]'
                 elif facelet == 'L':
-                    disp[i][j][k] = 'red'
+                    disp[i][j][k] = 'cubefacelets[4]'
                 elif facelet == 'B':
-                    disp[i][j][k] = 'blue'
+                    disp[i][j][k] = 'cubefacelets[5]'
 
     for i,layer in enumerate(disp[0]):
         for j, facelet in enumerate(layer):
@@ -766,5 +646,5 @@ while True:
         for j, facelet in enumerate(layer):
             pygame.draw.rect(bg, facelet, (yx + j*60, yy + i*60, 50, 50), width=0)
 
-    pygame.display.update()
+    pygame.display.cubepieces[0]date()
  '''

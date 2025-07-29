@@ -1,96 +1,96 @@
-U  R  U' R'
-F  U2 F2 U' F2 U' F'
-U' R  U  R' U2 R  U' R'
-U' R  U' R' U  F' U' F
-U' R  U2 R' U2 R  U' R'
-F' U' F
-F' U  F  U2 R  U  R'
-U  F' U  F  U' F' U' F
-U' R  U' R' U2 R  U' R'
-U2 R  U  R' F  R' F' R
-U  B  U' B' F' U' F
-R' U2 R  F' U' F
-U  L  U' L' R  U' R'
-L  U  L' F' U2 F
-F  U  F2 U' F
-F  U' F' R' F  R  F'
-U' R  U' R' U  R  U  R'
-R  U' R' U2 F' U' F
-R  U  R'
-L' B2 R2 B  R2 B  L
-U' R  U  R' U  R  U  R'
-U  F' U' F  U2 F' U  F
-R' U2 R2 U  R2 U  R
-F  R' F' R
-U  R  U  R' U2 R  U  R'
-U  F' U' F  U' R  U  R'
-R' U' R2 U  R'
-F  D  R  D' F'
-U' L  U  L' R  U  R'
-B' R  U  R' B
-U' L' U' L  R  U' R'
-F  U2 F' R  U  R'
-R  U2 R' U' R  U  R'
-F  U  R  U' R' F' R  U' R'
-U  R  U2 R' U  R  U' R'
-F' L' U2 L  F
-R  B  U2 B' R'
-U' F' U2 F2 R' F' R
-U  F  R' F' R  U  R  U  R'
-F' U2 F  U  F' U' F
-R  U' R' U' F' U2 F  U' R  U  R'
-R  U' R' F' U2 F
-U' R2 F  R2 F'
-B' R  B2 U' B' U2 R'
-R2 D  B2 D' R2
-U2 R  B' U  B  R'
-U  F2 R' F2 R
-L  F' L2' U  L  U2' F
-R  U' R2 F  R  F'
-U' R  U' R' F' U' F
-U  R  U' R2 F  R  F'
-R  U' R' F' U' F
-U2 R  U' R2 F  R  F'
-U  R  U' R' F' U' F
-U' R  U' R2 F  R  F'
-F' U' F  U  F' U' F
-R  U' R' U' R  U  R' U2 R  U' R'
-F' L' U2 L  F  R  U  R'
-R  U2 R' U  R2 F  R2 F'
-R' U' R2 U' R' F' U' F
-R  B' U' R' B  F' U' F
-R  U2 B' U  R' B
-R  U  L' U2 R' L
-R  U' R2 D' F' D  R
-U' F' U  F  R' F  R  F'
-R  U2 R' U2 F' U' F
-F' U  F  R' F  R  F'
-U' R  U' R' F  R' F' R
-U  F' U  F  R' F  R  F'
-R  U' R' F  R' F' R
-F' U2 F  U2 R  U  R'
-U  R  U' R' F  R' F' R
+U1 R1 U3 R3 
+F1 U2 F2 U3 F2 U3 F3 
+U3 R1 U1 R3 U2 R1 U3 R3 
+U3 R1 U3 R3 U1 F3 U3 F1 
+U3 R1 U2 R3 U2 R1 U3 R3 
+F3 U3 F1 
+F3 U1 F1 U2 R1 U1 R3 
+U1 F3 U1 F1 U3 F3 U3 F1 
+U3 R1 U3 R3 U2 R1 U3 R3 
+U2 R1 U1 R3 F1 R3 F3 R1 
+U1 B1 U3 B3 F3 U3 F1 
+R3 U2 R1 F3 U3 F1 
+U1 L1 U3 L3 R1 U3 R3 
+L1 U1 L3 F3 U2 F1 
+F1 U1 F2 U3 F1 
+F1 U3 F3 R3 F1 R1 F3 
+U3 R1 U3 R3 U1 R1 U1 R3 
+R1 U3 R3 U2 F3 U3 F1 
+R1 U1 R3 
+L3 B2 R2 B1 R2 B1 L1 
+U3 R1 U1 R3 U1 R1 U1 R3 
+U1 F3 U3 F1 U2 F3 U1 F1 
+R3 U2 R2 U1 R2 U1 R1 
+F1 R3 F3 R1 
+U1 R1 U1 R3 U2 R1 U1 R3 
+U1 F3 U3 F1 U3 R1 U1 R3 
+R3 U3 R2 U1 R3 
+F1 D1 R1 D3 F3 
+U3 L1 U1 L3 R1 U1 R3 
+B3 R1 U1 R3 B1 
+U3 L3 U3 L1 R1 U3 R3 
+F1 U2 F3 R1 U1 R3 
+R1 U2 R3 U3 R1 U1 R3 
+F1 U1 R1 U3 R3 F3 R1 U3 R3 
+U1 R1 U2 R3 U1 R1 U3 R3 
+F3 L3 U2 L1 F1 
+R1 B1 U2 B3 R3 
+U3 F3 U2 F2 R3 F3 R1 
+U1 F1 R3 F3 R1 U1 R1 U1 R3 
+F3 U2 F1 U1 F3 U3 F1 
+R1 U3 R3 U3 F3 U2 F1 U3 R1 U1 R3 
+R1 U3 R3 F3 U2 F1 
+U3 R2 F1 R2 F3 
+B3 R1 B2 U3 B3 U2 R3 
+R2 D1 B2 D3 R2 
+U2 R1 B3 U1 B1 R3 
+U1 F2 R3 F2 R1 
+L1 F3 L23 U1 L1 U23 F1 
+R1 U3 R2 F1 R1 F3 
+U3 R1 U3 R3 F3 U3 F1 
+U1 R1 U3 R2 F1 R1 F3 
+R1 U3 R3 F3 U3 F1 
+U2 R1 U3 R2 F1 R1 F3 
+U1 R1 U3 R3 F3 U3 F1 
+U3 R1 U3 R2 F1 R1 F3 
+F3 U3 F1 U1 F3 U3 F1 
+R1 U3 R3 U3 R1 U1 R3 U2 R1 U3 R3 
+F3 L3 U2 L1 F1 R1 U1 R3 
+R1 U2 R3 U1 R2 F1 R2 F3 
+R3 U3 R2 U3 R3 F3 U3 F1 
+R1 B3 U3 R3 B1 F3 U3 F1 
+R1 U2 B3 U1 R3 B1 
+R1 U1 L3 U2 R3 L1 
+R1 U3 R2 D3 F3 D1 R1 
+U3 F3 U1 F1 R3 F1 R1 F3 
+R1 U2 R3 U2 F3 U3 F1 
+F3 U1 F1 R3 F1 R1 F3 
+U3 R1 U3 R3 F1 R3 F3 R1 
+U1 F3 U1 F1 R3 F1 R1 F3 
+R1 U3 R3 F1 R3 F3 R1 
+F3 U2 F1 U2 R1 U1 R3 
+U1 R1 U3 R3 F1 R3 F3 R1 
 0
-R  U' R' U  F' U2 F  U  F' U2 F
-R2 U' R2 U  R2
-B' D' R  D  B
-B2 D' R2 D  B2
-L  D  F' U' F  D' L'
-F2 U  F2 U' F2
-L  D  F' D' L'
-R  U  R' U' R  U  R'
-U  F' U  F2 R' F' R
-U' F' U  F  R  U  R'
-U2 F' U  F2 R' F' R
-F' U  F  R  U  R'
-U' F' U  F2 R' F' R
-U  F' U  F  R  U  R'
-F' U  F2 R' F' R
-R  U' R' U  R  U2 R' U  R  U' R'
-R  U' R' F' L' U2 L  F
-F' U' F  R' U  R2 U' R'
-F' U  F2 D  R  D' F'
-L  U  L' R  U2 R' U2 R  U  R'
-F' U2 L  U' L' F
-F' U2 F  U' F2 R' F2 R
-L' U' R  L  U2 R' F' U2 F
+R1 U3 R3 U1 F3 U2 F1 U1 F3 U2 F1 
+R2 U3 R2 U1 R2 
+B3 D3 R1 D1 B1 
+B2 D3 R2 D1 B2 
+L1 D1 F3 U3 F1 D3 L3 
+F2 U1 F2 U3 F2 
+L1 D1 F3 D3 L3  
+R1 U1 R3 U3 R1 U1 R3 
+U1 F3 U1 F2 R3 F3 R1 
+U3 F3 U1 F1 R1 U1 R3 
+U2 F3 U1 F2 R3 F3 R1 
+F3 U1 F1 R1 U1 R3 
+U3 F3 U1 F2 R3 F3 R1 
+U1 F3 U1 F1 R1 U1 R3 
+F3 U1 F2 R3 F3 R1 
+R1 U3 R3 U1 R1 U2 R3 U1 R1 U3 R3 
+R1 U3 R3 F3 L3 U2 L1 F1 
+F3 U3 F1 R3 U1 R2 U3 R3 
+F3 U1 F2 D1 R1 D3 F3 
+L1 U1 L3 R1 U2 R3 U2 R1 U1 R3 
+F3 U2 L1 U3 L3 F1 
+F3 U2 F1 U3 F2 R3 F2 R1 
+L3 U3 R1 L1 U2 R3 F3 U2 F1 
