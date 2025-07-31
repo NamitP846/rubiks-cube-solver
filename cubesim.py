@@ -303,7 +303,6 @@ def inface(face, piecenum):
     return(False)
 
 def solvecrosspiece(cubefacelets, cubepieces, rot):
-    global sol
     edge = rot + 1
     edgeloc = ''
 
@@ -347,11 +346,32 @@ def solvecrosspiece(cubefacelets, cubepieces, rot):
     for k, crosscase in enumerate(crosscaselist):
         if ''.join(edgecase) == crosscase:
             move(cubefacelets, cubepieces, crossalglist[k], rotation = rot)
-            print(f'Cross Piece {rot} Solved - {sol}')
             return
-    
+
+def solvecross(cubefacelets, cubepieces):
+    global sol
+    fastestmovecount = 100
+    fastestorder = []
+    for order in permutations:
+        simfacelets = copy.deepcopy(cubefacelets)
+        simpieces = copy.deepcopy(cubepieces)
+        solvecrosspiece(simfacelets, simpieces, order[0])
+        solvecrosspiece(simfacelets, simpieces, order[1])
+        solvecrosspiece(simfacelets, simpieces, order[2])
+        solvecrosspiece(simfacelets, simpieces, order[3])
+        currentmovecount = len(sol)/3
+        if currentmovecount < fastestmovecount:
+            fastestmovecount = currentmovecount
+            fastestorder = order
+        sol = ''
+    solvecrosspiece(cubefacelets, cubepieces, fastestorder[0])
+    solvecrosspiece(cubefacelets, cubepieces, fastestorder[1])
+    solvecrosspiece(cubefacelets, cubepieces, fastestorder[2])
+    solvecrosspiece(cubefacelets, cubepieces, fastestorder[3])
+    print(f'Cross Solved - {fastestorder} - {sol}')
 
 def solvef2lpair(cubefacelets, cubepieces, rot):
+    global sol
     corner, edge = rot*2+5, rot*2+6
     colors = ['F', 'R', 'B', 'L']
     faceletfaces = [cubefacelets[2], cubefacelets[1], cubefacelets[5], cubefacelets[4]]
@@ -442,11 +462,32 @@ def solvef2lpair(cubefacelets, cubepieces, rot):
     for k, f2lcase in enumerate(f2lcaselist):
         if ''.join(f2l) == f2lcase:
             move(cubefacelets, cubepieces, f2lalglist[k], rotation = rot)
-            print(f'Pair {rot} solved ({f2lcaselist[k]}) - {sol}')
             return
 
-def solveoll(cubefacelets, cubepieces):
+def solvef2l(cubefacelets, cubepieces):
     global sol
+    fastestmovecount = 100
+    fastestorder = []
+    savesol = sol
+    for order in permutations:
+        simfacelets = copy.deepcopy(cubefacelets)
+        simpieces = copy.deepcopy(cubepieces)
+        solvef2lpair(simfacelets, simpieces, order[0])
+        solvef2lpair(simfacelets, simpieces, order[1])
+        solvef2lpair(simfacelets, simpieces, order[2])
+        solvef2lpair(simfacelets, simpieces, order[3])
+        currentmovecount = len(sol)/3
+        if currentmovecount < fastestmovecount:
+            fastestmovecount = currentmovecount
+            fastestorder = order
+        sol = savesol
+    solvef2lpair(cubefacelets, cubepieces, fastestorder[0])
+    solvef2lpair(cubefacelets, cubepieces, fastestorder[1])
+    solvef2lpair(cubefacelets, cubepieces, fastestorder[2])
+    solvef2lpair(cubefacelets, cubepieces, fastestorder[3])
+    print(f'F2L Solved - {fastestorder} - {sol}')
+
+def solveoll(cubefacelets, cubepieces):
     oll = cubefacelets[2][0] + cubefacelets[1][0] + cubefacelets[5][0] + cubefacelets[4][0]
     for j, facelet in enumerate(oll):
         if facelet != 'U':
@@ -458,6 +499,7 @@ def solveoll(cubefacelets, cubepieces):
                 print('oll solved -', sol)
                 return
         oll = oll[3:] + oll[0:3]
+    print('oll not solved')
 
 def solvepll(cubefacelets, cubepieces):
     pll = cubefacelets[2][0] + cubefacelets[1][0] + cubefacelets[5][0] + cubefacelets[4][0]
@@ -488,25 +530,16 @@ def genrandscramble():
         scr += ' '
     return scr
 
-# test scramble
-#scramble = ""
-#move(facelets, pieces, scramble, scr=True)
 
+# average moves test
 totalmoves = 0
-
-for x in range(100):
+for x in range(10000):
     randomscramble = genrandscramble()
     print(randomscramble)
-    move(facelets, pieces, "L3 U1 R2 U2 R2 B2 L3 U2 B2 L3 D2 B1 D1 F1 R2 B2 L3 R1", scr=True)
+    move(facelets, pieces, randomscramble, scr=True)
     sol = ''
-    solvecrosspiece(facelets, pieces, 0)
-    solvecrosspiece(facelets, pieces, 1)
-    solvecrosspiece(facelets, pieces, 2)
-    solvecrosspiece(facelets, pieces, 3)
-    solvef2lpair(facelets, pieces, 0)
-    solvef2lpair(facelets, pieces, 1)
-    solvef2lpair(facelets, pieces, 2)
-    solvef2lpair(facelets, pieces, 3)
+    solvecross(facelets, pieces)
+    solvef2l(facelets, pieces)
     solveoll(facelets, pieces)
     solvepll(facelets, pieces)
     auf(facelets, pieces)
@@ -519,9 +552,6 @@ for x in range(100):
             solmoves[i]  = ' '
             solnums[i+1] = (int(solnums[i]) + int(solnums[i+1]))%4
             solnums[i] = ' '
-        if solnums[i+1] == 0:
-            solnums[i+1] = ' '
-            solmoves[i+1] = ' '
     solnums = [i for i in solnums if i != ' ']
     solmoves = [i for i in solmoves if i != ' ']
 
@@ -535,9 +565,10 @@ for x in range(100):
     totalmoves += movecount
     sol = ''
 
-print(totalmoves/100)
-'''
+print(totalmoves/10000)
 
+'''
+# cube display
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -561,10 +592,7 @@ while True:
                 print(pieces)
             elif event.unicode == 's':
                 sol = ''
-                solvecrosspiece(facelets, pieces, 0)
-                solvecrosspiece(facelets, pieces, 1)
-                solvecrosspiece(facelets, pieces, 2)
-                solvecrosspiece(facelets, pieces, 3)
+                solvecross(facelets, pieces)
                 solvef2lpair(facelets, pieces, 1)
                 solvef2lpair(facelets, pieces, 2)
                 solvef2lpair(facelets, pieces, 3)
@@ -632,4 +660,4 @@ while True:
             pygame.draw.rect(bg, facelet, (yx + j*60, yy + i*60, 50, 50), width=0)
 
     pygame.display.update()
- '''
+'''
