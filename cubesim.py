@@ -227,7 +227,12 @@ def move(cubefacelets, cubepieces, movestr, rotation = 0, scr = False):
         if let == 'F' or let == 'R' or let == 'B' or let == 'L':
             movelet = moves[(moves.index(let) + rotation)%4]
         if let.isalpha():
-            rep = int(movestr[i+1])
+            if movestr[i+1] == "'":
+                rep = 3
+            elif movestr[i+1] == " ":
+                rep = 1
+            else:
+                rep = int(movestr[i+1])
             sol = f'{sol}{movelet}{rep} '
         if movelet == 'U':
             if scr:
@@ -368,7 +373,7 @@ def solvecross(cubefacelets, cubepieces):
     solvecrosspiece(cubefacelets, cubepieces, fastestorder[1])
     solvecrosspiece(cubefacelets, cubepieces, fastestorder[2])
     solvecrosspiece(cubefacelets, cubepieces, fastestorder[3])
-    print(f'Cross Solved - {fastestorder} - {sol}')
+    print(f'Cross Solved - {fastestorder} - {len(sol)/3}')
 
 def solvef2lpair(cubefacelets, cubepieces, rot):
     global sol
@@ -485,7 +490,7 @@ def solvef2l(cubefacelets, cubepieces):
     solvef2lpair(cubefacelets, cubepieces, fastestorder[1])
     solvef2lpair(cubefacelets, cubepieces, fastestorder[2])
     solvef2lpair(cubefacelets, cubepieces, fastestorder[3])
-    print(f'F2L Solved - {fastestorder} - {sol}')
+    print(f'F2L Solved - {fastestorder} - {len(sol)/3}')
 
 def solveoll(cubefacelets, cubepieces):
     oll = cubefacelets[2][0] + cubefacelets[1][0] + cubefacelets[5][0] + cubefacelets[4][0]
@@ -496,7 +501,7 @@ def solveoll(cubefacelets, cubepieces):
         for k, ollcase in enumerate(ollcaselist):
             if ''.join(oll) == ollcase:
                 move(cubefacelets, cubepieces, ollalglist[k], rotation = i)
-                print('oll solved -', sol)
+                print(f'Oll Solved - {len(sol)/3}')
                 return
         oll = oll[3:] + oll[0:3]
     print('oll not solved')
@@ -509,7 +514,7 @@ def solvepll(cubefacelets, cubepieces):
             for k, pllcase in enumerate(pllcaselist):
                 if ''.join(pll) == pllcase:
                     move(cubefacelets, cubepieces, pllalglist[k], rotation = j)
-                    print('pll solved -', sol)
+                    print(f'Pll Solved - {len(sol)/3}')
                     return
             pll = pll[3:] + pll[0:3]
         for l, facelet in enumerate(pll):
@@ -530,10 +535,10 @@ def genrandscramble():
         scr += ' '
     return scr
 
-
+'''
 # average moves test
 totalmoves = 0
-for x in range(10000):
+for x in range(100):
     randomscramble = genrandscramble()
     print(randomscramble)
     move(facelets, pieces, randomscramble, scr=True)
@@ -552,6 +557,9 @@ for x in range(10000):
             solmoves[i]  = ' '
             solnums[i+1] = (int(solnums[i]) + int(solnums[i+1]))%4
             solnums[i] = ' '
+        if solnums[i+1] == 0:
+            solnums[i+1] = ' '
+            solmoves[i+1] = ' '
     solnums = [i for i in solnums if i != ' ']
     solmoves = [i for i in solmoves if i != ' ']
 
@@ -560,14 +568,14 @@ for x in range(10000):
         sol += solmoves[i]
         sol += str(solnums[i])
         sol += ' '
-    print(f'{sol}\n')
+    print(sol)
     movecount = len(sol)/3
     totalmoves += movecount
     sol = ''
 
-print(totalmoves/10000)
-
+print(totalmoves/100, '\n')
 '''
+
 # cube display
 while True:
     for event in pygame.event.get():
@@ -588,15 +596,15 @@ while True:
                 randomscramble = genrandscramble()
                 move(facelets, pieces, randomscramble, scr=True)
                 print('Scramble:', randomscramble)
+            elif event.unicode == "i":
+                scramble = input("Scramble: ")
+                move(facelets, pieces, scramble, scr=True)
             elif event.unicode == 'p':
                 print(pieces)
             elif event.unicode == 's':
                 sol = ''
                 solvecross(facelets, pieces)
-                solvef2lpair(facelets, pieces, 1)
-                solvef2lpair(facelets, pieces, 2)
-                solvef2lpair(facelets, pieces, 3)
-                solvef2lpair(facelets, pieces, 0)
+                solvef2l(facelets, pieces)
                 solveoll(facelets, pieces)
                 solvepll(facelets, pieces)
                 auf(facelets, pieces)
@@ -616,7 +624,12 @@ while True:
                 sol = ''
                 for i in range(len(solmoves)):
                     sol += solmoves[i]
-                    sol += str(solnums[i])
+                    if solnums[i] == "1":
+                        sol += " "
+                    elif solnums[i] == "3":
+                        sol += "'"
+                    else:
+                        sol += str(solnums[i])
                     sol += ' '
                 print(sol)
                 movecount = len(sol)/3
@@ -660,4 +673,3 @@ while True:
             pygame.draw.rect(bg, facelet, (yx + j*60, yy + i*60, 50, 50), width=0)
 
     pygame.display.update()
-'''
